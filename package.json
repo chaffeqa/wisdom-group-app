@@ -7,6 +7,7 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
+    "format": "prettier --write \"./**/*.js\"",
     "eject": "expo eject"
   },
   "dependencies": {
@@ -17,6 +18,19 @@
     "react-router-native": "^4.3.0"
   },
   "devDependencies": {
+    "husky": "^1.0.0-rc.13",
+    "lint-staged": "^7.2.0",
     "prettier": "1.14.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,json,css,md}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }
