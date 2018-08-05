@@ -12,7 +12,13 @@ import {
   CardActions,
   CardContent,
   Button,
-  withTheme
+  withTheme,
+  DrawerSection,
+  DrawerItem,
+  Toolbar,
+  ToolbarBackAction,
+  ToolbarContent,
+  ToolbarAction
 } from "react-native-paper";
 
 import Svg, {
@@ -32,7 +38,7 @@ import Svg, {
   Stop
 } from "react-native-svg";
 
-import { NativeRouter, Route, Link } from "react-router-native";
+import { NativeRouter, Route, Link, withRouter } from "react-router-native";
 
 const theme = {
   ...DefaultTheme,
@@ -232,6 +238,39 @@ class BottomFab extends React.PureComponent {
   }
 }
 
+class TitlebarWithoutRouter extends React.PureComponent {
+  render() {
+    const { history, location, match } = this.props;
+    const isBackable = location.pathname.split("/").length > 2;
+    return (
+      <Toolbar>
+        {isBackable && <ToolbarBackAction onPress={history.goBack} />}
+        <ToolbarContent title="Title" subtitle="Subtitle" />
+        <ToolbarAction icon="search" onPress={this._onSearch} />
+        <ToolbarAction icon="more-vert" onPress={this._onMore} />
+        <DrawerSection title="Some title">
+          <DrawerItem
+            label="First Item"
+            active={active === "First Item"}
+            onPress={() => {
+              this.setState({ active: "First Item" });
+            }}
+          />
+          <DrawerItem
+            label="Second Item"
+            active={active === "Second Item"}
+            onPress={() => {
+              this.setState({ active: "Second Item" });
+            }}
+          />
+        </DrawerSection>
+      </Toolbar>
+    );
+  }
+}
+
+const Titlebar = withRouter(TitlebarWithoutRouter);
+
 export default class App extends React.Component {
   state = {
     fabExpanded: false
@@ -241,12 +280,11 @@ export default class App extends React.Component {
     return (
       <PaperProvider theme={theme}>
         <NativeRouter>
-          <SafeAreaView style={styles.background}>
-            <View style={[styles.background, styles.centered]}>
-              <Route exact Path="/" component={Home} />
-              <BottomFab />
-            </View>
-          </SafeAreaView>
+          <View style={[styles.background, styles.centered]}>
+            <Titlebar />
+            <Route exact Path="/" component={Home} />
+            <BottomFab />
+          </View>
         </NativeRouter>
       </PaperProvider>
     );
