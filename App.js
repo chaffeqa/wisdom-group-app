@@ -1,5 +1,12 @@
 import React from "react";
-import { StyleSheet, Text, View, ScrollView, SafeAreaView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  SafeAreaView,
+  Dimensions
+} from "react-native";
 import {
   DefaultTheme,
   FABGroup,
@@ -38,6 +45,8 @@ import Svg, {
   Stop
 } from "react-native-svg";
 
+import BackgroundPattern from "./src/client/components/BackgroundPattern";
+
 import { NativeRouter, Route, Link, withRouter } from "react-router-native";
 
 const theme = {
@@ -67,6 +76,14 @@ const styles = StyleSheet.create({
   },
   homeContainer: {
     flex: 1
+  },
+  layer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    ...StyleSheet.absoluteFillObject
   },
   homeAddButton: {
     position: "absolute",
@@ -240,7 +257,7 @@ class BottomFab extends React.PureComponent {
 
 class TitlebarWithoutRouter extends React.PureComponent {
   render() {
-    const { history, location, match } = this.props;
+    const { history, location, match, active } = this.props;
     const isBackable = location.pathname.split("/").length > 2;
     return (
       <Toolbar>
@@ -271,6 +288,24 @@ class TitlebarWithoutRouter extends React.PureComponent {
 
 const Titlebar = withRouter(TitlebarWithoutRouter);
 
+const Background = ({ tint }) => {
+  const { width, height } = Dimensions.get("window");
+  const svgW = 1200;
+  const svgH = 2500;
+  const w = Math.round(width * 1.2);
+  const h = Math.round(height * 1.2);
+  return (
+    <View style={[styles.container, styles.centered, { position: "absolute" }]}>
+      <BackgroundPattern width={w} height={h} viewBox={`0 0 ${svgW} ${svgH}`} />
+      {tint && (
+        <View
+          style={[styles.container, styles.centered, { backgroundColor: tint }]}
+        />
+      )}
+    </View>
+  );
+};
+
 export default class App extends React.Component {
   state = {
     fabExpanded: false
@@ -280,9 +315,20 @@ export default class App extends React.Component {
     return (
       <PaperProvider theme={theme}>
         <NativeRouter>
-          <View style={[styles.background, styles.centered]}>
-            <Titlebar />
-            <Route exact Path="/" component={Home} />
+          <View style={[styles.background, styles.centered, styles.container]}>
+            {/* <Titlebar /> */}
+            <Background />
+            <View
+              style={[
+                styles.container,
+                styles.centered,
+                styles.layer,
+                { backgroundColor: `rgba(62,95, 128, 0.45)` }
+              ]}
+            >
+              <Text>wef</Text>
+            </View>
+            {/* <Route exact path="/" component={Home} /> */}
             <BottomFab />
           </View>
         </NativeRouter>
