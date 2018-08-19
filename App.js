@@ -5,8 +5,10 @@ import {
   View,
   ScrollView,
   SafeAreaView,
-  Dimensions
+  Dimensions,
+  Image
 } from "react-native";
+import { Constants } from "expo";
 import {
   DefaultTheme,
   FABGroup,
@@ -20,6 +22,7 @@ import {
   CardContent,
   Button,
   withTheme,
+  ClipPath,
   DrawerSection,
   DrawerItem,
   Toolbar,
@@ -46,6 +49,12 @@ import Svg, {
 } from "react-native-svg";
 
 import BackgroundPattern from "./src/client/components/BackgroundPattern";
+import Selector from "./src/client/components/Selector";
+import InnerCircle from "./src/client/components/InnerCircle";
+import PrayerIcon from "./src/client/components/PrayerIcon";
+import ObservationIcon from "./src/client/components/ObservationIcon";
+import ScriptureIcon from "./src/client/components/ScriptureIcon";
+import ApplicationIcon from "./src/client/components/ApplicationIcon";
 
 import { NativeRouter, Route, Link, withRouter } from "react-router-native";
 
@@ -288,7 +297,7 @@ class TitlebarWithoutRouter extends React.PureComponent {
 
 const Titlebar = withRouter(TitlebarWithoutRouter);
 
-const Background = ({ tint }) => {
+const Background = () => {
   const { width, height } = Dimensions.get("window");
   const svgW = 1200;
   const svgH = 2500;
@@ -297,11 +306,167 @@ const Background = ({ tint }) => {
   return (
     <View style={[styles.container, styles.centered, { position: "absolute" }]}>
       <BackgroundPattern width={w} height={h} viewBox={`0 0 ${svgW} ${svgH}`} />
-      {tint && (
+    </View>
+  );
+};
+
+const Wheel = props => {
+  const { width, height } = Dimensions.get("window");
+  const svgW = 1030;
+  const svgH = 1030;
+  const ww = width / 10;
+  const w = Math.round(width * 0.85);
+  const h = Math.round(width * 0.85);
+  const margin = (width - w) / 2 + Constants.statusBarHeight;
+  const imageWidth = (w / 2) * 0.5;
+  const imgPad = w / 9.5;
+  const imgPadMod = 1.35;
+  return (
+    <View
+      style={[
+        styles.container,
+        styles.centered,
+        { position: "absolute", width: w, height: h, top: margin }
+      ]}
+    >
+      <Selector
+        style={[styles.layer]}
+        width={w}
+        height={h}
+        viewBox={`0 0 ${svgW} ${svgH}`}
+      />
+      <InnerCircle
+        style={[styles.layer, { left: w / 2 - ww, top: h / 2 - ww }]}
+        width={w}
+        height={h}
+        viewBox={`0 0 ${svgW} ${svgH}`}
+      />
+      <View style={{ width: w, height: w / 2, flexDirection: "row" }}>
         <View
-          style={[styles.container, styles.centered, { backgroundColor: tint }]}
+          style={{
+            width: w / 2,
+            height: w / 2,
+            paddingTop: imgPad * imgPadMod,
+            paddingBottom: imgPad / imgPadMod,
+            paddingLeft: imgPad * imgPadMod,
+            paddingRight: imgPad / imgPadMod
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <Image
+              style={[
+                styles.layer,
+                {
+                  left: 0,
+                  top: 0,
+                  flex: 1,
+                  alignSelf: "stretch",
+                  width: undefined,
+                  height: undefined
+                }
+              ]}
+              resizeMode="contain"
+              source={require("./assets/images/scripture-icon.png")}
+            />
+          </View>
+        </View>
+        <View
+          style={{
+            width: w / 2,
+            height: w / 2,
+            paddingTop: imgPad * imgPadMod,
+            paddingBottom: imgPad / imgPadMod,
+            paddingLeft: imgPad / imgPadMod,
+            paddingRight: imgPad * imgPadMod
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <Image
+              style={[
+                styles.layer,
+                {
+                  left: 0,
+                  top: 0,
+                  flex: 1,
+                  alignSelf: "stretch",
+                  width: undefined,
+                  height: undefined
+                }
+              ]}
+              resizeMode="contain"
+              source={require("./assets/images/observation-icon.png")}
+            />
+          </View>
+        </View>
+      </View>
+      <View style={{ width: w, height: w / 2, flexDirection: "row" }}>
+        <View
+          style={{
+            width: w / 2,
+            height: w / 2,
+            paddingTop: imgPad / imgPadMod,
+            paddingBottom: imgPad * imgPadMod,
+            paddingLeft: imgPad * imgPadMod,
+            paddingRight: imgPad / imgPadMod
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <Image
+              style={[
+                styles.layer,
+                {
+                  left: 0,
+                  top: 0,
+                  flex: 1,
+                  alignSelf: "stretch",
+                  width: undefined,
+                  height: undefined
+                }
+              ]}
+              resizeMode="contain"
+              source={require("./assets/images/prayer-icon.png")}
+            />
+          </View>
+        </View>
+        <View
+          style={{
+            width: w / 2,
+            height: w / 2,
+            paddingTop: imgPad / imgPadMod,
+            paddingBottom: imgPad * imgPadMod,
+            paddingLeft: imgPad / imgPadMod,
+            paddingRight: imgPad * imgPadMod
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <Image
+              style={[
+                styles.layer,
+                {
+                  left: 0,
+                  top: 0,
+                  flex: 1,
+                  alignSelf: "stretch",
+                  width: undefined,
+                  height: undefined
+                }
+              ]}
+              resizeMode="contain"
+              source={require("./assets/images/application-icon.png")}
+            />
+          </View>
+        </View>
+      </View>
+      {/*<Image
+          style={[styles.layer, { left: 0, top: 0, flex: 1, alignSelf: 'stretch', width: undefined, height: undefined }]}
+          resizeMode="contain"
+          source={require("./assets/images/prayer-icon.png")}
         />
-      )}
+      
+      <PrayerIcon style={[styles.layer, { left: margin + ww / 2, top: margin + h / 2 - ww / 2 }]} width={w / 4} height={h / 4} viewBox={`0 0 ${296} ${344}`} />
+      <ObservationIcon style={[styles.layer, { left: (w / 2  + ww / 2) / 1, top: margin }]} width={w / 4} height={h / 4} viewBox={`0 0 ${296} ${344}`} />
+      <ApplicationIcon style={[styles.layer, { left: (w / 2  + ww / 2) / 1, top: margin + h / 2 - ww / 2 }]} width={w / 4} height={h / 4} viewBox={`0 0 ${296} ${344}`} />
+      <ScriptureIcon style={[styles.layer, { left: margin + ww / 2, top: margin }]} width={w / 4} height={h / 4} viewBox={`0 0 ${296} ${344}`} /> */}
     </View>
   );
 };
@@ -318,16 +483,7 @@ export default class App extends React.Component {
           <View style={[styles.background, styles.centered, styles.container]}>
             {/* <Titlebar /> */}
             <Background />
-            <View
-              style={[
-                styles.container,
-                styles.centered,
-                styles.layer,
-                { backgroundColor: `rgba(62,95, 128, 0.45)` }
-              ]}
-            >
-              <Text>wef</Text>
-            </View>
+            <Wheel />
             {/* <Route exact path="/" component={Home} /> */}
             <BottomFab />
           </View>

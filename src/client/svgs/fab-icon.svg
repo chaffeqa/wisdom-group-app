@@ -1,0 +1,19 @@
+
+<svg width="200px" height="200px" viewBox="0 0 200 200" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="UI-for-SOAP-01" transform="translate(-994.000000, -2287.000000)" fill-rule="nonzero">
+            <g id="fab" transform="translate(958.000000, 2251.000000)">
+                <g id="FAB" transform="translate(36.000000, 36.000000)">
+                    <path d="M0,100 L100,100 L100,0 C44.771525,0 0,44.771525 0,100 Z" id="Shape" fill="#F7B808"></path>
+                    <path d="M200,100 C200,44.771525 155.228475,0 100,0 L100,100 L200,100 Z" id="Shape" fill="#8DC63F"></path>
+                    <path d="M100,200 C155.228475,200 200,155.228475 200,100 L100,100 L100,200 Z" id="Shape" fill="#00A79D"></path>
+                    <path d="M0,100 C0,155.228475 44.771525,200 100,200 L100,100 L0,100 Z" id="Shape" fill="#007EB7"></path>
+                    <polygon id="Shape" fill="#FFFFFF" points="155.32 92.58 107.33 92.58 107.33 44.59 92.15 44.59 92.15 92.58 44.15 92.58 44.15 107.76 92.15 107.76 92.15 155.75 107.33 155.75 107.33 107.76 155.32 107.76"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
