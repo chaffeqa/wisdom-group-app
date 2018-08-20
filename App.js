@@ -6,6 +6,7 @@ import {
   ScrollView,
   SafeAreaView,
   Dimensions,
+  TouchableOpacity,
   Image
 } from "react-native";
 import { Constants } from "expo";
@@ -51,10 +52,10 @@ import Svg, {
 import BackgroundPattern from "./src/client/components/BackgroundPattern";
 import Selector from "./src/client/components/Selector";
 import InnerCircle from "./src/client/components/InnerCircle";
-import PrayerIcon from "./src/client/components/PrayerIcon";
-import ObservationIcon from "./src/client/components/ObservationIcon";
-import ScriptureIcon from "./src/client/components/ScriptureIcon";
-import ApplicationIcon from "./src/client/components/ApplicationIcon";
+import PrayerQuad from "./src/client/components/PrayerQuad";
+import ObservationQuad from "./src/client/components/ObservationQuad";
+import ScriptureQuad from "./src/client/components/ScriptureQuad";
+import ApplicationQuad from "./src/client/components/ApplicationQuad";
 
 import { NativeRouter, Route, Link, withRouter } from "react-router-native";
 
@@ -310,6 +311,47 @@ const Background = () => {
   );
 };
 
+const Quad = ({
+  w,
+  imgPad,
+  imgPadMod,
+  quadMargin,
+  sourceStr,
+  quadComponent: Comp,
+  pads
+}) => (
+  <TouchableOpacity onPress={() => {}} activeOpacity={0.6}>
+    <View
+      style={[
+        {
+          width: w / 2,
+          height: w / 2
+        },
+        pads
+      ]}
+    >
+      <Comp style={[styles.layer, quadMargin]} />
+      <View style={{ flex: 1 }}>
+        <Image
+          style={[
+            styles.layer,
+            {
+              left: 0,
+              top: 0,
+              flex: 1,
+              alignSelf: "stretch",
+              width: undefined,
+              height: undefined
+            }
+          ]}
+          resizeMode="contain"
+          source={sourceStr}
+        />
+      </View>
+    </View>
+  </TouchableOpacity>
+);
+
 const Wheel = props => {
   const { width, height } = Dimensions.get("window");
   const svgW = 1030;
@@ -329,134 +371,88 @@ const Wheel = props => {
         { position: "absolute", width: w, height: h, top: margin }
       ]}
     >
-      <Selector
+      {/*<Selector
         style={[styles.layer]}
         width={w}
         height={h}
         viewBox={`0 0 ${svgW} ${svgH}`}
-      />
-      <InnerCircle
-        style={[styles.layer, { left: w / 2 - ww, top: h / 2 - ww }]}
-        width={w}
-        height={h}
-        viewBox={`0 0 ${svgW} ${svgH}`}
-      />
+      />*/}
       <View style={{ width: w, height: w / 2, flexDirection: "row" }}>
-        <View
-          style={{
-            width: w / 2,
-            height: w / 2,
+        <Quad
+          w={w}
+          imgPad={imgPad}
+          imgPadMod={imgPadMod}
+          quadMargin={{ marginBottom: 3, marginRight: 3 }}
+          sourceStr={require("./assets/images/scripture-icon.png")}
+          quadComponent={ScriptureQuad}
+          pads={{
             paddingTop: imgPad * imgPadMod,
             paddingBottom: imgPad / imgPadMod,
             paddingLeft: imgPad * imgPadMod,
             paddingRight: imgPad / imgPadMod
           }}
-        >
-          <View style={{ flex: 1 }}>
-            <Image
-              style={[
-                styles.layer,
-                {
-                  left: 0,
-                  top: 0,
-                  flex: 1,
-                  alignSelf: "stretch",
-                  width: undefined,
-                  height: undefined
-                }
-              ]}
-              resizeMode="contain"
-              source={require("./assets/images/scripture-icon.png")}
-            />
-          </View>
-        </View>
-        <View
-          style={{
-            width: w / 2,
-            height: w / 2,
+        />
+        <Quad
+          w={w}
+          imgPad={imgPad}
+          imgPadMod={imgPadMod}
+          quadMargin={{ marginBottom: 3, marginLeft: 3 }}
+          sourceStr={require("./assets/images/observation-icon.png")}
+          quadComponent={ObservationQuad}
+          pads={{
             paddingTop: imgPad * imgPadMod,
             paddingBottom: imgPad / imgPadMod,
             paddingLeft: imgPad / imgPadMod,
             paddingRight: imgPad * imgPadMod
           }}
-        >
-          <View style={{ flex: 1 }}>
-            <Image
-              style={[
-                styles.layer,
-                {
-                  left: 0,
-                  top: 0,
-                  flex: 1,
-                  alignSelf: "stretch",
-                  width: undefined,
-                  height: undefined
-                }
-              ]}
-              resizeMode="contain"
-              source={require("./assets/images/observation-icon.png")}
-            />
-          </View>
-        </View>
+        />
       </View>
       <View style={{ width: w, height: w / 2, flexDirection: "row" }}>
-        <View
-          style={{
-            width: w / 2,
-            height: w / 2,
+        <Quad
+          w={w}
+          imgPad={imgPad}
+          imgPadMod={imgPadMod}
+          quadMargin={{ marginTop: 3, marginRight: 3 }}
+          sourceStr={require("./assets/images/prayer-icon.png")}
+          quadComponent={PrayerQuad}
+          pads={{
             paddingTop: imgPad / imgPadMod,
             paddingBottom: imgPad * imgPadMod,
             paddingLeft: imgPad * imgPadMod,
             paddingRight: imgPad / imgPadMod
           }}
-        >
-          <View style={{ flex: 1 }}>
-            <Image
-              style={[
-                styles.layer,
-                {
-                  left: 0,
-                  top: 0,
-                  flex: 1,
-                  alignSelf: "stretch",
-                  width: undefined,
-                  height: undefined
-                }
-              ]}
-              resizeMode="contain"
-              source={require("./assets/images/prayer-icon.png")}
-            />
-          </View>
-        </View>
-        <View
-          style={{
-            width: w / 2,
-            height: w / 2,
+        />
+        <Quad
+          w={w}
+          imgPad={imgPad}
+          imgPadMod={imgPadMod}
+          quadMargin={{ marginTop: 3, marginLeft: 3 }}
+          sourceStr={require("./assets/images/application-icon.png")}
+          quadComponent={ApplicationQuad}
+          pads={{
             paddingTop: imgPad / imgPadMod,
             paddingBottom: imgPad * imgPadMod,
             paddingLeft: imgPad / imgPadMod,
             paddingRight: imgPad * imgPadMod
           }}
-        >
-          <View style={{ flex: 1 }}>
-            <Image
-              style={[
-                styles.layer,
-                {
-                  left: 0,
-                  top: 0,
-                  flex: 1,
-                  alignSelf: "stretch",
-                  width: undefined,
-                  height: undefined
-                }
-              ]}
-              resizeMode="contain"
-              source={require("./assets/images/application-icon.png")}
-            />
-          </View>
-        </View>
+        />
       </View>
+      <TouchableOpacity
+        onPress={() => {}}
+        activeOpacity={0.6}
+        style={[
+          styles.layer,
+          {
+            left: w / 2 - ww,
+            top: h / 2 - ww,
+            right: w - w / 2 - ww,
+            bottom: h - h / 2 - ww
+          }
+        ]}
+      >
+        <InnerCircle width={w} height={h} viewBox={`0 0 ${svgW} ${svgH}`} />
+      </TouchableOpacity>
+
       {/*<Image
           style={[styles.layer, { left: 0, top: 0, flex: 1, alignSelf: 'stretch', width: undefined, height: undefined }]}
           resizeMode="contain"
