@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Image
 } from "react-native";
-import { Constants } from "expo";
+import { Constants, KeepAwake } from "expo";
 import {
   DefaultTheme,
   FABGroup,
@@ -52,6 +52,7 @@ import Svg, {
 import BackgroundPattern from "./src/client/components/BackgroundPattern";
 import Selector from "./src/client/components/Selector";
 import InnerCircle from "./src/client/components/InnerCircle";
+import Drawer from "./src/client/components/Drawer";
 import PrayerQuad from "./src/client/components/PrayerQuad";
 import ObservationQuad from "./src/client/components/ObservationQuad";
 import ScriptureQuad from "./src/client/components/ScriptureQuad";
@@ -62,8 +63,8 @@ import { NativeRouter, Route, Link, withRouter } from "react-router-native";
 const theme = {
   ...DefaultTheme,
   colors: {
-    ...DefaultTheme.colors
-    // primary: 'tomato',
+    ...DefaultTheme.colors,
+    primary: "white"
     // accent: 'yellow',
   }
 };
@@ -148,7 +149,7 @@ class CircleChooser extends React.Component {
   }
 }
 
-class Home extends React.Component {
+class Feed extends React.Component {
   render() {
     return (
       <View style={styles.homeContainer}>
@@ -211,6 +212,42 @@ class Home extends React.Component {
   }
 }
 
+class ScriptureNav extends React.PureComponent {
+  render() {
+    return (
+      <View
+        style={[
+          {
+            height: 22,
+            width: "100%",
+            justifyContent: "center",
+            backgroundColor: "red"
+          }
+        ]}
+      >
+        <Button onPress={() => {}} icon="chevron-left">
+          t
+        </Button>
+        <Text>{"Romans 11"}</Text>
+        <Button onPress={() => {}} icon="chevron-right">
+          t
+        </Button>
+      </View>
+    );
+  }
+}
+
+class Home extends React.PureComponent {
+  render() {
+    return (
+      <View style={[styles.container, { flex: 1, marginTop: 50 }]}>
+        <ScriptureNav />
+        <Wheel />
+      </View>
+    );
+  }
+}
+
 class BottomFab extends React.PureComponent {
   state = {
     open: false
@@ -241,19 +278,23 @@ class BottomFab extends React.PureComponent {
           // const state = location.state || {}
           const isExpanded = this.state.open;
           const actions = [
-            { icon: "add", onPress: this.fabActionPress },
-            { icon: "star", label: "Star", onPress: this.fabActionPress },
-            { icon: "email", label: "Email", onPress: this.fabActionPress },
+            { icon: "mic", label: "Audio", onPress: this.fabActionPress },
+            { icon: "videocam", label: "Video", onPress: this.fabActionPress },
             {
-              icon: "notifications",
-              label: "Remind",
+              icon: "camera-alt",
+              label: "Picture",
+              onPress: this.fabActionPress
+            },
+            {
+              icon: "edit",
+              label: "Text",
               onPress: this.fabActionPress
             }
           ];
           return (
             <FABGroup
               open={isExpanded}
-              icon={isExpanded ? "today" : "add"}
+              icon={isExpanded ? "close" : "add"}
               actions={actions}
               onStateChange={this.onStateChange}
               onPress={this.onFabPress}
@@ -266,31 +307,23 @@ class BottomFab extends React.PureComponent {
 }
 
 class TitlebarWithoutRouter extends React.PureComponent {
+  _toggleDrawer = () => {};
   render() {
     const { history, location, match, active } = this.props;
     const isBackable = location.pathname.split("/").length > 2;
     return (
-      <Toolbar>
+      <Toolbar
+        style={[
+          {
+            width: "100%"
+          }
+        ]}
+      >
         {isBackable && <ToolbarBackAction onPress={history.goBack} />}
+        {!isBackable && (
+          <ToolbarAction icon="menu" onPress={this._toggleDrawer} />
+        )}
         <ToolbarContent title="Title" subtitle="Subtitle" />
-        <ToolbarAction icon="search" onPress={this._onSearch} />
-        <ToolbarAction icon="more-vert" onPress={this._onMore} />
-        <DrawerSection title="Some title">
-          <DrawerItem
-            label="First Item"
-            active={active === "First Item"}
-            onPress={() => {
-              this.setState({ active: "First Item" });
-            }}
-          />
-          <DrawerItem
-            label="Second Item"
-            active={active === "Second Item"}
-            onPress={() => {
-              this.setState({ active: "Second Item" });
-            }}
-          />
-        </DrawerSection>
       </Toolbar>
     );
   }
@@ -364,19 +397,7 @@ const Wheel = props => {
   const imgPad = w / 9.5;
   const imgPadMod = 1.35;
   return (
-    <View
-      style={[
-        styles.container,
-        styles.centered,
-        { position: "absolute", width: w, height: h, top: margin }
-      ]}
-    >
-      {/*<Selector
-        style={[styles.layer]}
-        width={w}
-        height={h}
-        viewBox={`0 0 ${svgW} ${svgH}`}
-      />*/}
+    <View style={[styles.centered, { width: w, height: h }]}>
       <View style={{ width: w, height: w / 2, flexDirection: "row" }}>
         <Quad
           w={w}
@@ -452,17 +473,6 @@ const Wheel = props => {
       >
         <InnerCircle width={w} height={h} viewBox={`0 0 ${svgW} ${svgH}`} />
       </TouchableOpacity>
-
-      {/*<Image
-          style={[styles.layer, { left: 0, top: 0, flex: 1, alignSelf: 'stretch', width: undefined, height: undefined }]}
-          resizeMode="contain"
-          source={require("./assets/images/prayer-icon.png")}
-        />
-      
-      <PrayerIcon style={[styles.layer, { left: margin + ww / 2, top: margin + h / 2 - ww / 2 }]} width={w / 4} height={h / 4} viewBox={`0 0 ${296} ${344}`} />
-      <ObservationIcon style={[styles.layer, { left: (w / 2  + ww / 2) / 1, top: margin }]} width={w / 4} height={h / 4} viewBox={`0 0 ${296} ${344}`} />
-      <ApplicationIcon style={[styles.layer, { left: (w / 2  + ww / 2) / 1, top: margin + h / 2 - ww / 2 }]} width={w / 4} height={h / 4} viewBox={`0 0 ${296} ${344}`} />
-      <ScriptureIcon style={[styles.layer, { left: margin + ww / 2, top: margin }]} width={w / 4} height={h / 4} viewBox={`0 0 ${296} ${344}`} /> */}
     </View>
   );
 };
@@ -477,13 +487,17 @@ export default class App extends React.Component {
       <PaperProvider theme={theme}>
         <NativeRouter>
           <View style={[styles.background, styles.centered, styles.container]}>
-            {/* <Titlebar /> */}
             <Background />
-            <Wheel />
-            {/* <Route exact path="/" component={Home} /> */}
+            <Titlebar />
+            <View style={[styles.container, { flex: 1 }]}>
+              <Route exact path="/" component={Home} />
+              <Route exact path="/feed" component={Feed} />
+            </View>
             <BottomFab />
+            {/* <Drawer open={true} /> */}
           </View>
         </NativeRouter>
+        <KeepAwake />
       </PaperProvider>
     );
   }
