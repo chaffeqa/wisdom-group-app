@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   Dimensions,
   TouchableOpacity,
+  Button as RnButton,
   Image
 } from "react-native";
 import { Constants, KeepAwake } from "expo";
@@ -29,8 +30,11 @@ import {
   Toolbar,
   ToolbarBackAction,
   ToolbarContent,
+  Icon,
   ToolbarAction
 } from "react-native-paper";
+
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import Svg, {
   Circle,
@@ -218,20 +222,33 @@ class ScriptureNav extends React.PureComponent {
       <View
         style={[
           {
-            height: 22,
+            flexDirection: "row",
+            height: 40,
             width: "100%",
-            justifyContent: "center",
-            backgroundColor: "red"
+            marginBottom: 10,
+            justifyContent: "space-around",
+            alignItems: "center"
           }
         ]}
       >
-        <Button onPress={() => {}} icon="chevron-left">
-          t
-        </Button>
-        <Text>{"Romans 11"}</Text>
-        <Button onPress={() => {}} icon="chevron-right">
-          t
-        </Button>
+        <TouchableOpacity style={[{ flexDirection: "row" }]} onPress={() => {}}>
+          <Text
+            style={[
+              {
+                color: `rgba(255,255,255, 0.7)`,
+                fontSize: 20,
+                fontWeight: "bold"
+              }
+            ]}
+          >
+            Romans 11
+          </Text>
+          <MaterialIcons
+            name="filter-list"
+            color="rgba(255,255,255, 0.7)"
+            style={[{ marginLeft: 10, fontSize: 20, fontWeight: "bold" }]}
+          />
+        </TouchableOpacity>
       </View>
     );
   }
@@ -240,7 +257,7 @@ class ScriptureNav extends React.PureComponent {
 class Home extends React.PureComponent {
   render() {
     return (
-      <View style={[styles.container, { flex: 1, marginTop: 50 }]}>
+      <View style={[styles.container, { flex: 1, alignItems: "center" }]}>
         <ScriptureNav />
         <Wheel />
       </View>
