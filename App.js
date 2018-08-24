@@ -235,7 +235,7 @@ class ScriptureNav extends React.PureComponent {
           <Text
             style={[
               {
-                color: `rgba(255,255,255, 0.7)`,
+                color: `rgba(255,255,255, 0.8)`,
                 fontSize: 20,
                 fontWeight: "bold"
               }
@@ -245,7 +245,7 @@ class ScriptureNav extends React.PureComponent {
           </Text>
           <MaterialIcons
             name="filter-list"
-            color="rgba(255,255,255, 0.7)"
+            color="rgba(255,255,255, 0.8)"
             style={[{ marginLeft: 10, fontSize: 20, fontWeight: "bold" }]}
           />
         </TouchableOpacity>
@@ -311,7 +311,18 @@ class BottomFab extends React.PureComponent {
           return (
             <FABGroup
               open={isExpanded}
-              icon={isExpanded ? "close" : "add"}
+              // icon={isExpanded ? "close" : "add"}
+              icon={({ size, color }) => (
+                <Image
+                  source={require("./assets/images/FAB.png")}
+                  style={{
+                    width: size * 3,
+                    height: size * 3,
+                    left: size * -1,
+                    top: size * -1
+                  }}
+                />
+              )}
               actions={actions}
               onStateChange={this.onStateChange}
               onPress={this.onFabPress}
@@ -340,7 +351,7 @@ class TitlebarWithoutRouter extends React.PureComponent {
         {!isBackable && (
           <ToolbarAction icon="menu" onPress={this._toggleDrawer} />
         )}
-        <ToolbarContent title="Title" subtitle="Subtitle" />
+        <ToolbarContent title="Wisdom Group" subtitle="Mark's Group" />
       </Toolbar>
     );
   }
