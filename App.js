@@ -61,8 +61,15 @@ import PrayerQuad from "./src/client/components/PrayerQuad";
 import ObservationQuad from "./src/client/components/ObservationQuad";
 import ScriptureQuad from "./src/client/components/ScriptureQuad";
 import ApplicationQuad from "./src/client/components/ApplicationQuad";
+import { CategoriesArray, Categories } from "./src/client/utils/categories";
 
-import { NativeRouter, Route, Link, withRouter } from "react-router-native";
+import {
+  NativeRouter,
+  Route,
+  Link,
+  withRouter,
+  Switch
+} from "react-router-native";
 
 const theme = {
   ...DefaultTheme,
@@ -163,7 +170,7 @@ class Feed extends React.Component {
           raised
           primary
           mode="contained"
-          onPress={() => console.log("Pressed")}
+          onPress={() => this.props.history.push("/")}
         >
           Add SOAP
         </Button>
@@ -218,6 +225,7 @@ class Feed extends React.Component {
 
 class ScriptureNav extends React.PureComponent {
   render() {
+    const { currentCategory } = this.props;
     return (
       <View
         style={[
@@ -254,24 +262,150 @@ class ScriptureNav extends React.PureComponent {
   }
 }
 
-class Home extends React.PureComponent {
+const pathnameCategoryMatcher = /category\/([a-z]*)/;
+const getCurrentCategory = location => {
+  const match = pathnameCategoryMatcher.exec(location.pathname);
+  return match ? match[1] : null;
+};
+
+class CategoryResponse extends React.PureComponent {
   render() {
+    const { history, location, match } = this.props;
+    console.log("CategoryResponse:");
+    console.log(match);
+    const currentCategory = getCurrentCategory(location);
     return (
-      <View style={[styles.container, { flex: 1, alignItems: "center" }]}>
-        <ScriptureNav />
-        <Wheel />
+      <View
+        style={[
+          styles.container,
+          { flex: 1, alignItems: "center", backgroundColor: "blue", width: 300 }
+        ]}
+      >
+        <Text>{JSON.stringify(match, null, 2)}</Text>
       </View>
     );
   }
 }
 
-class BottomFab extends React.PureComponent {
+class Category extends React.PureComponent {
+  render() {
+    const { history, location, match } = this.props;
+    console.log("Category:");
+    console.log(match);
+    const currentCategory = getCurrentCategory(location);
+    return (
+      <View
+        style={[
+          styles.container,
+          { flex: 1, alignItems: "center", backgroundColor: "red", width: 300 }
+        ]}
+      >
+        <Text>{JSON.stringify(match, null, 2)}</Text>
+        <Route
+          path="/category/:category/response/:response"
+          component={CategoryResponse}
+        />
+      </View>
+    );
+  }
+}
+
+class Home extends React.PureComponent {
+  render() {
+    const { history, location, match } = this.props;
+    console.log("location:");
+    console.log(location);
+    const currentCategory = getCurrentCategory(location);
+    return (
+      <View style={[styles.container, { flex: 1, alignItems: "center" }]}>
+        <ScriptureNav currentCategory={currentCategory} />
+        <Wheel history={history} currentCategory={currentCategory} />
+        <Route path="/category/:category" component={Category} />
+      </View>
+    );
+  }
+}
+
+const CategoryIcons = {
+  prayer: ({ size, color }) => (
+    <Image
+      source={require("./assets/images/prayer-icon.png")}
+      style={{
+        width: size * 2,
+        height: size * 2,
+        left: size * -0.5,
+        top: size * -0.5
+      }}
+    />
+  ),
+  scripture: ({ size, color }) => (
+    <Image
+      source={require("./assets/images/scripture-icon.png")}
+      style={{
+        width: size * 2,
+        height: size * 2,
+        left: size * -0.5,
+        top: size * -0.5
+      }}
+    />
+  ),
+  application: ({ size, color }) => (
+    <Image
+      source={require("./assets/images/application-icon.png")}
+      style={{
+        width: size * 2,
+        height: size * 2,
+        left: size * -0.5,
+        top: size * -0.5
+      }}
+    />
+  ),
+  observation: ({ size, color }) => (
+    <Image
+      source={require("./assets/images/observation-icon.png")}
+      style={{
+        width: size * 2,
+        height: size * 2,
+        left: size * -0.5,
+        top: size * -0.5
+      }}
+    />
+  )
+};
+
+const FabIcon = ({ size, color }) => (
+  <Image
+    source={require("./assets/images/FAB.png")}
+    style={{
+      width: size * 3,
+      height: size * 3,
+      left: size * -1,
+      top: size * -1
+    }}
+  />
+);
+
+class BottomFabWithoutRouter extends React.PureComponent {
   state = {
     open: false
   };
 
-  fabActionPress = event => {
-    console.log(event);
+  fabActionPress = action => () => {
+    console.log("fabActionPress: " + action);
+    const { history, location, match } = this.props;
+    const currentCategory = getCurrentCategory(location);
+    if (Categories[action]) {
+      const pathname = `/category/${action}`;
+      if (currentCategory) {
+        history.replace(pathname);
+      } else {
+        history.push(pathname);
+      }
+    }
+    if (/audio|video|picture|text/.test(action)) {
+      history.push(`/category/${currentCategory}/response/${action}`);
+    }
+    // console.log(event);
   };
 
   onFabPress = event => {
@@ -287,58 +421,69 @@ class BottomFab extends React.PureComponent {
   };
 
   render() {
+    const { history, location, match } = this.props;
+    // console.log('routerProps')
+    // console.log(routerProps)
+    // const state = location.state || {}
+    const isExpanded = this.state.open;
+    const currentCategory = getCurrentCategory(location);
+    console.log(`render fab: '${currentCategory}'`);
+
+    const actions = currentCategory
+      ? [
+          {
+            icon: "mic",
+            label: "Audio",
+            key: "audio",
+            onPress: this.fabActionPress("audio")
+          },
+          {
+            icon: "videocam",
+            label: "Video",
+            key: "video",
+            onPress: this.fabActionPress("video")
+          },
+          {
+            icon: "camera-alt",
+            label: "Picture",
+            key: "picture",
+            onPress: this.fabActionPress("picture")
+          },
+          {
+            icon: "edit",
+            label: "Text",
+            key: "text",
+            onPress: this.fabActionPress("text")
+          }
+        ]
+      : CategoriesArray.map(category => {
+          return {
+            icon: CategoryIcons[category.key],
+            label: category.label,
+            key: category.key,
+            onPress: this.fabActionPress(category.key)
+          };
+        });
     return (
-      <Route>
-        {({ history, location, match }) => {
-          // console.log('routerProps')
-          // console.log(routerProps)
-          // const state = location.state || {}
-          const isExpanded = this.state.open;
-          const actions = [
-            { icon: "mic", label: "Audio", onPress: this.fabActionPress },
-            { icon: "videocam", label: "Video", onPress: this.fabActionPress },
-            {
-              icon: "camera-alt",
-              label: "Picture",
-              onPress: this.fabActionPress
-            },
-            {
-              icon: "edit",
-              label: "Text",
-              onPress: this.fabActionPress
-            }
-          ];
-          return (
-            <FABGroup
-              open={isExpanded}
-              // icon={isExpanded ? "close" : "add"}
-              icon={({ size, color }) => (
-                <Image
-                  source={require("./assets/images/FAB.png")}
-                  style={{
-                    width: size * 3,
-                    height: size * 3,
-                    left: size * -1,
-                    top: size * -1
-                  }}
-                />
-              )}
-              actions={actions}
-              onStateChange={this.onStateChange}
-              onPress={this.onFabPress}
-            />
-          );
-        }}
-      </Route>
+      <FABGroup
+        open={isExpanded}
+        // icon={isExpanded ? "close" : "add"}
+        icon={currentCategory ? CategoryIcons[currentCategory] : FabIcon}
+        actions={actions}
+        onStateChange={this.onStateChange}
+        onPress={this.onFabPress}
+      />
     );
   }
 }
+const BottomFab = withRouter(BottomFabWithoutRouter);
 
 class TitlebarWithoutRouter extends React.PureComponent {
   _toggleDrawer = () => {};
   render() {
     const { history, location, match, active } = this.props;
-    const isBackable = location.pathname.split("/").length > 2;
+    const parts = location.pathname.split("/");
+    const isBackable = parts.length > 2;
     return (
       <Toolbar
         style={[
@@ -359,7 +504,7 @@ class TitlebarWithoutRouter extends React.PureComponent {
 
 const Titlebar = withRouter(TitlebarWithoutRouter);
 
-const Background = () => {
+const Background = ({ category }) => {
   const { width, height } = Dimensions.get("window");
   const svgW = 1200;
   const svgH = 2500;
@@ -367,7 +512,12 @@ const Background = () => {
   const h = Math.round(height * 1.2);
   return (
     <View style={[styles.container, styles.centered, { position: "absolute" }]}>
-      <BackgroundPattern width={w} height={h} viewBox={`0 0 ${svgW} ${svgH}`} />
+      <BackgroundPattern
+        width={w}
+        height={h}
+        category={category}
+        viewBox={`0 0 ${svgW} ${svgH}`}
+      />
     </View>
   );
 };
@@ -379,9 +529,15 @@ const Quad = ({
   quadMargin,
   sourceStr,
   quadComponent: Comp,
+  category,
+  history,
+  onPress,
   pads
 }) => (
-  <TouchableOpacity onPress={() => {}} activeOpacity={0.6}>
+  <TouchableOpacity
+    onPress={() => history.push(`/category/${category}`)}
+    activeOpacity={0.6}
+  >
     <View
       style={[
         {
@@ -432,8 +588,10 @@ const Wheel = props => {
           imgPad={imgPad}
           imgPadMod={imgPadMod}
           quadMargin={{ marginBottom: 3, marginRight: 3 }}
-          sourceStr={require("./assets/images/scripture-icon.png")}
+          sourceStr={require("./assets/images/scripture-quad.png")}
           quadComponent={ScriptureQuad}
+          category={"scripture"}
+          history={props.history}
           pads={{
             paddingTop: imgPad * imgPadMod,
             paddingBottom: imgPad / imgPadMod,
@@ -446,8 +604,10 @@ const Wheel = props => {
           imgPad={imgPad}
           imgPadMod={imgPadMod}
           quadMargin={{ marginBottom: 3, marginLeft: 3 }}
-          sourceStr={require("./assets/images/observation-icon.png")}
+          sourceStr={require("./assets/images/observation-quad.png")}
           quadComponent={ObservationQuad}
+          category={"observation"}
+          history={props.history}
           pads={{
             paddingTop: imgPad * imgPadMod,
             paddingBottom: imgPad / imgPadMod,
@@ -462,8 +622,10 @@ const Wheel = props => {
           imgPad={imgPad}
           imgPadMod={imgPadMod}
           quadMargin={{ marginTop: 3, marginRight: 3 }}
-          sourceStr={require("./assets/images/prayer-icon.png")}
+          sourceStr={require("./assets/images/prayer-quad.png")}
           quadComponent={PrayerQuad}
+          category={"prayer"}
+          history={props.history}
           pads={{
             paddingTop: imgPad / imgPadMod,
             paddingBottom: imgPad * imgPadMod,
@@ -476,8 +638,10 @@ const Wheel = props => {
           imgPad={imgPad}
           imgPadMod={imgPadMod}
           quadMargin={{ marginTop: 3, marginLeft: 3 }}
-          sourceStr={require("./assets/images/application-icon.png")}
+          sourceStr={require("./assets/images/application-quad.png")}
           quadComponent={ApplicationQuad}
+          category={"application"}
+          history={props.history}
           pads={{
             paddingTop: imgPad / imgPadMod,
             paddingBottom: imgPad * imgPadMod,
@@ -487,7 +651,7 @@ const Wheel = props => {
         />
       </View>
       <TouchableOpacity
-        onPress={() => {}}
+        onPress={() => props.history.push("/feed")}
         activeOpacity={0.6}
         style={[
           styles.layer,
@@ -506,10 +670,6 @@ const Wheel = props => {
 };
 
 export default class App extends React.Component {
-  state = {
-    fabExpanded: false
-  };
-
   render() {
     return (
       <PaperProvider theme={theme}>
@@ -518,8 +678,10 @@ export default class App extends React.Component {
             <Background />
             <Titlebar />
             <View style={[styles.container, { flex: 1 }]}>
-              <Route exact path="/" component={Home} />
-              <Route exact path="/feed" component={Feed} />
+              <Switch>
+                <Route exact path="/feed" component={Feed} />
+                <Route component={Home} />
+              </Switch>
             </View>
             <BottomFab />
             {/* <Drawer open={true} /> */}
