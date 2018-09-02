@@ -8,6 +8,7 @@ import {
   Dimensions,
   TouchableOpacity,
   Button as RnButton,
+  TextInput,
   Image
 } from "react-native";
 import { Constants, KeepAwake } from "expo";
@@ -30,6 +31,7 @@ import {
   Toolbar,
   ToolbarBackAction,
   ToolbarContent,
+  TextInput as RNPTextInput,
   Icon,
   ToolbarAction
 } from "react-native-paper";
@@ -87,10 +89,12 @@ const styles = StyleSheet.create({
   },
   centered: {
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    overflow: "hidden"
   },
   container: {
-    flex: 1
+    flex: 1,
+    width: "100%"
   },
   content: {
     padding: 4,
@@ -116,6 +120,24 @@ const styles = StyleSheet.create({
     marginLeft: 30,
     alignItems: "center",
     justifyContent: "center"
+  },
+  h2: {
+    width: "100%",
+    paddingBottom: 8,
+    marginBottom: 8,
+    borderBottomWidth: 1,
+    borderStyle: "solid",
+    borderColor: "rgba(0,0,0,0.6)"
+  },
+  h2Text: {
+    fontSize: 17,
+    fontWeight: "bold"
+  },
+  bgClear: {
+    backgroundColor: "rgba(255,255,255,0.6)",
+    borderRadius: 3,
+    marginTop: 8,
+    padding: 10
   }
 });
 
@@ -268,20 +290,54 @@ const getCurrentCategory = location => {
   return match ? match[1] : null;
 };
 
+class TextResponse extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { text: "" };
+  }
+
+  onTextChange = text => {
+    this.setState({ text });
+  };
+
+  render() {
+    return (
+      <TextInput
+        style={[styles.container]}
+        placeholder="Enter your response..."
+        onChangeText={this.onTextChange}
+        multiline={true}
+        numberOfLines={6}
+        value={this.state.text}
+      />
+    );
+  }
+}
+
 class CategoryResponse extends React.PureComponent {
   render() {
     const { history, location, match } = this.props;
-    console.log("CategoryResponse:");
-    console.log(match);
+    // console.log("CategoryResponse:");
+    // console.log(match);
     const currentCategory = getCurrentCategory(location);
     return (
       <View
         style={[
           styles.container,
-          { flex: 1, alignItems: "center", backgroundColor: "blue", width: 300 }
+          styles.bgClear,
+          {
+            alignItems: "flex-start",
+            flex: 1,
+            width: 300,
+            flexDirection: "column"
+          }
         ]}
       >
-        <Text>{JSON.stringify(match, null, 2)}</Text>
+        <View style={[styles.h2]}>
+          <Text style={[styles.h2Text]}>What Verse stood out to you?</Text>
+        </View>
+
+        <TextResponse />
       </View>
     );
   }
@@ -290,21 +346,18 @@ class CategoryResponse extends React.PureComponent {
 class Category extends React.PureComponent {
   render() {
     const { history, location, match } = this.props;
-    console.log("Category:");
-    console.log(match);
+    // console.log("Category:");
+    // console.log(match);
     const currentCategory = getCurrentCategory(location);
     return (
       <View
         style={[
           styles.container,
-          { flex: 1, alignItems: "center", backgroundColor: "red", width: 300 }
+          styles.bgClear,
+          { flex: 1, alignItems: "center", alignItems: "center", width: 300 }
         ]}
       >
-        <Text>{JSON.stringify(match, null, 2)}</Text>
-        <Route
-          path="/category/:category/response/:response"
-          component={CategoryResponse}
-        />
+        <Text>Category: {JSON.stringify(match, null, 2)}</Text>
       </View>
     );
   }
@@ -320,69 +373,103 @@ class Home extends React.PureComponent {
       <View style={[styles.container, { flex: 1, alignItems: "center" }]}>
         <ScriptureNav currentCategory={currentCategory} />
         <Wheel history={history} currentCategory={currentCategory} />
-        <Route path="/category/:category" component={Category} />
+        <Route exact path="/category/:category" component={Category} />
+        <Route
+          exact
+          path="/category/:category/response/:response"
+          component={CategoryResponse}
+        />
       </View>
     );
   }
 }
 
 const CategoryIcons = {
-  prayer: ({ size, color }) => (
+  prayer: require("./assets/images/prayer-icon.png"),
+  scripture: require("./assets/images/scripture-icon.png"),
+  application: require("./assets/images/application-icon.png"),
+  observation: require("./assets/images/observation-icon.png")
+};
+const QuadIcons = {
+  prayer: require("./assets/images/prayer-quad.png"),
+  scripture: require("./assets/images/scripture-quad.png"),
+  application: require("./assets/images/application-quad.png"),
+  observation: require("./assets/images/observation-quad.png")
+};
+
+const buildCategoryIcon = name => ({ size, color }) => (
+  <View
+    style={{
+      width: size * 2,
+      height: size * 2,
+      left: size * -0.5,
+      top: size * -0.5,
+      borderRadius: size,
+      padding: size * 0.2,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: color
+    }}
+  >
     <Image
-      source={require("./assets/images/prayer-icon.png")}
+      source={CategoryIcons[name]}
       style={{
-        width: size * 2,
-        height: size * 2,
-        left: size * -0.5,
-        top: size * -0.5
+        width: size * 1.5,
+        height: size * 1.5,
+        flex: 1
       }}
     />
-  ),
-  scripture: ({ size, color }) => (
+  </View>
+);
+
+const CategoryFabIcons = {
+  prayer: buildCategoryIcon("prayer"),
+  scripture: buildCategoryIcon("scripture"),
+  application: buildCategoryIcon("application"),
+  observation: buildCategoryIcon("observation")
+};
+
+const FabSize = size => ({
+  width: size * 3,
+  height: size * 3,
+  left: size * -1,
+  top: size * -1
+});
+const createFabIcon = name => ({ size, color }) => (
+  <View
+    pointerEvents="box-none"
+    style={{
+      width: size * 2.5,
+      height: size * 2.5,
+      left: size * -0.75,
+      top: size * -0.75,
+      borderRadius: size * 2.5,
+      padding: size * 0.5,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: color
+    }}
+  >
     <Image
-      source={require("./assets/images/scripture-icon.png")}
+      source={CategoryIcons[name]}
       style={{
-        width: size * 2,
-        height: size * 2,
-        left: size * -0.5,
-        top: size * -0.5
+        width: size * 1.5,
+        height: size * 1.5,
+        flex: 1
       }}
     />
-  ),
-  application: ({ size, color }) => (
-    <Image
-      source={require("./assets/images/application-icon.png")}
-      style={{
-        width: size * 2,
-        height: size * 2,
-        left: size * -0.5,
-        top: size * -0.5
-      }}
-    />
-  ),
-  observation: ({ size, color }) => (
-    <Image
-      source={require("./assets/images/observation-icon.png")}
-      style={{
-        width: size * 2,
-        height: size * 2,
-        left: size * -0.5,
-        top: size * -0.5
-      }}
-    />
-  )
+  </View>
+);
+
+const FabIcons = {
+  prayer: createFabIcon("prayer"),
+  scripture: createFabIcon("scripture"),
+  application: createFabIcon("application"),
+  observation: createFabIcon("observation")
 };
 
 const FabIcon = ({ size, color }) => (
-  <Image
-    source={require("./assets/images/FAB.png")}
-    style={{
-      width: size * 3,
-      height: size * 3,
-      left: size * -1,
-      top: size * -1
-    }}
-  />
+  <Image source={require("./assets/images/FAB.png")} style={FabSize(size)} />
 );
 
 class BottomFabWithoutRouter extends React.PureComponent {
@@ -421,13 +508,19 @@ class BottomFabWithoutRouter extends React.PureComponent {
   };
 
   render() {
-    const { history, location, match } = this.props;
+    const { history, location, match, buster } = this.props;
     // console.log('routerProps')
     // console.log(routerProps)
     // const state = location.state || {}
     const isExpanded = this.state.open;
     const currentCategory = getCurrentCategory(location);
-    console.log(`render fab: '${currentCategory}'`);
+    // console.log(`render fab: '${currentCategory}'`);
+    if (buster === "plus" && !!currentCategory) {
+      return null;
+    }
+    if (buster !== "plus" && buster !== currentCategory) {
+      return null;
+    }
 
     const actions = currentCategory
       ? [
@@ -458,8 +551,9 @@ class BottomFabWithoutRouter extends React.PureComponent {
         ]
       : CategoriesArray.map(category => {
           return {
-            icon: CategoryIcons[category.key],
+            icon: CategoryFabIcons[category.key],
             label: category.label,
+            color: category.color,
             key: category.key,
             onPress: this.fabActionPress(category.key)
           };
@@ -468,7 +562,8 @@ class BottomFabWithoutRouter extends React.PureComponent {
       <FABGroup
         open={isExpanded}
         // icon={isExpanded ? "close" : "add"}
-        icon={currentCategory ? CategoryIcons[currentCategory] : FabIcon}
+        icon={currentCategory ? FabIcons[currentCategory] : FabIcon}
+        color={currentCategory ? Categories[currentCategory].color : undefined}
         actions={actions}
         onStateChange={this.onStateChange}
         onPress={this.onFabPress}
@@ -504,8 +599,9 @@ class TitlebarWithoutRouter extends React.PureComponent {
 
 const Titlebar = withRouter(TitlebarWithoutRouter);
 
-const Background = ({ category }) => {
+const BackgroundWithoutRouter = ({ location }) => {
   const { width, height } = Dimensions.get("window");
+  const category = getCurrentCategory(location);
   const svgW = 1200;
   const svgH = 2500;
   const w = Math.round(width * 1.2);
@@ -521,13 +617,14 @@ const Background = ({ category }) => {
     </View>
   );
 };
+const Background = withRouter(BackgroundWithoutRouter);
 
 const Quad = ({
   w,
   imgPad,
   imgPadMod,
   quadMargin,
-  sourceStr,
+  currentCategory,
   quadComponent: Comp,
   category,
   history,
@@ -535,7 +632,11 @@ const Quad = ({
   pads
 }) => (
   <TouchableOpacity
-    onPress={() => history.push(`/category/${category}`)}
+    onPress={() =>
+      !currentCategory
+        ? history.push(`/category/${category}`)
+        : history.replace(`/category/${category}`)
+    }
     activeOpacity={0.6}
   >
     <View
@@ -562,7 +663,7 @@ const Quad = ({
             }
           ]}
           resizeMode="contain"
-          source={sourceStr}
+          source={QuadIcons[category]}
         />
       </View>
     </View>
@@ -588,8 +689,8 @@ const Wheel = props => {
           imgPad={imgPad}
           imgPadMod={imgPadMod}
           quadMargin={{ marginBottom: 3, marginRight: 3 }}
-          sourceStr={require("./assets/images/scripture-quad.png")}
           quadComponent={ScriptureQuad}
+          currentCategory={props.currentCategory}
           category={"scripture"}
           history={props.history}
           pads={{
@@ -604,8 +705,8 @@ const Wheel = props => {
           imgPad={imgPad}
           imgPadMod={imgPadMod}
           quadMargin={{ marginBottom: 3, marginLeft: 3 }}
-          sourceStr={require("./assets/images/observation-quad.png")}
           quadComponent={ObservationQuad}
+          currentCategory={props.currentCategory}
           category={"observation"}
           history={props.history}
           pads={{
@@ -622,8 +723,8 @@ const Wheel = props => {
           imgPad={imgPad}
           imgPadMod={imgPadMod}
           quadMargin={{ marginTop: 3, marginRight: 3 }}
-          sourceStr={require("./assets/images/prayer-quad.png")}
           quadComponent={PrayerQuad}
+          currentCategory={props.currentCategory}
           category={"prayer"}
           history={props.history}
           pads={{
@@ -640,6 +741,7 @@ const Wheel = props => {
           quadMargin={{ marginTop: 3, marginLeft: 3 }}
           sourceStr={require("./assets/images/application-quad.png")}
           quadComponent={ApplicationQuad}
+          currentCategory={props.currentCategory}
           category={"application"}
           history={props.history}
           pads={{
@@ -683,7 +785,11 @@ export default class App extends React.Component {
                 <Route component={Home} />
               </Switch>
             </View>
-            <BottomFab />
+            <BottomFab buster="plus" />
+            <BottomFab buster="prayer" />
+            <BottomFab buster="application" />
+            <BottomFab buster="observation" />
+            <BottomFab buster="scripture" />
             {/* <Drawer open={true} /> */}
           </View>
         </NativeRouter>
