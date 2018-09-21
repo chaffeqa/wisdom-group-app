@@ -7,11 +7,12 @@ import {
   SafeAreaView,
   Dimensions,
   TouchableOpacity,
+  TouchableHighlight,
   Button as RnButton,
   TextInput,
   Image
 } from "react-native";
-import { Constants, KeepAwake } from "expo";
+import { Constants, KeepAwake, Audio, Permissions } from "expo";
 import {
   DefaultTheme,
   FABGroup,
@@ -63,6 +64,7 @@ import PrayerQuad from "./src/client/components/PrayerQuad";
 import ObservationQuad from "./src/client/components/ObservationQuad";
 import ScriptureQuad from "./src/client/components/ScriptureQuad";
 import ApplicationQuad from "./src/client/components/ApplicationQuad";
+// import Recording from "./src/client/components/Recording";
 import { CategoriesArray, Categories } from "./src/client/utils/categories";
 
 import {
@@ -80,6 +82,15 @@ const theme = {
     primary: "white"
     // accent: 'yellow',
   }
+};
+
+const QuadClickFlow = 1;
+const padWithZero = number => {
+  const string = number.toString();
+  if (number < 10) {
+    return "0" + string;
+  }
+  return string;
 };
 
 const styles = StyleSheet.create({
@@ -289,6 +300,100 @@ const getCurrentCategory = location => {
   const match = pathnameCategoryMatcher.exec(location.pathname);
   return match ? match[1] : null;
 };
+const pathnameResponseTypeMatcher = /response\/([a-z]*)/;
+const getCurrentResponseType = location => {
+  const match = pathnameResponseTypeMatcher.exec(location.pathname);
+  return match ? match[1] : null;
+};
+
+class RecordingResponse extends React.Component {
+  constructor(props) {
+    super(props);
+    this.recording = null;
+    this.sound = null;
+    this.isSeeking = false;
+    this.shouldPlayAtEndOfSeek = false;
+    this.state = {
+      haveRecordingPermissions: false,
+      isLoading: false,
+      isPlaybackAllowed: false,
+      muted: false,
+      soundPosition: null,
+      soundDuration: null,
+      recordingDuration: null,
+      shouldPlay: false,
+      isPlaying: false,
+      isRecording: false,
+      fontLoaded: true,
+      shouldCorrectPitch: true,
+      volume: 1.0,
+      rate: 1.0
+    };
+    this.recordingSettings = JSON.parse(
+      JSON.stringify(Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY)
+    );
+    // // UNCOMMENT THIS TO TEST maxFileSize:
+    // this.recordingSettings.android['maxFileSize'] = 12000;
+  }
+
+  _askForPermissions = async () => {
+    const response = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
+    this.setState({
+      haveRecordingPermissions: response.status === "granted"
+    });
+  };
+
+  _onRecordPressed = () => {
+    if (this.state.isRecording) {
+      this._stopRecordingAndEnablePlayback();
+    } else {
+      this._stopPlaybackAndBeginRecording();
+    }
+  };
+
+  _getMMSSFromMillis(millis) {
+    const totalSeconds = millis / 1000;
+    const seconds = Math.floor(totalSeconds % 60);
+    const minutes = Math.floor(totalSeconds / 60);
+    return padWithZero(minutes) + ":" + padWithZero(seconds);
+  }
+
+  _getRecordingTimestamp() {
+    if (this.state.recordingDuration != null) {
+      return `${this._getMMSSFromMillis(this.state.recordingDuration)}`;
+    }
+    return `${this._getMMSSFromMillis(0)}`;
+  }
+
+  render() {
+    return (
+      <View style={[{}]}>
+        <TouchableHighlight
+          onPress={this._onRecordPressed}
+          disabled={this.state.isLoading}
+        >
+          <MaterialIcons
+            name="mic"
+            color="rgba(255,255,255, 0.8)"
+            style={[{ marginLeft: 10, fontSize: 20, fontWeight: "bold" }]}
+          />
+        </TouchableHighlight>
+        <View style={[{}]}>
+          <Text style={[{}]}>{this.state.isRecording ? "LIVE" : "RECORD"}</Text>
+          <View style={[{}]}>
+            <Text
+              style={[this.state.isRecording ? { color: "#FF0000" } : null]}
+            >
+              {this._getRecordingTimestamp()}
+            </Text>
+          </View>
+          <View />
+        </View>
+        <View />
+      </View>
+    );
+  }
+}
 
 class TextResponse extends React.Component {
   constructor(props) {
@@ -314,12 +419,23 @@ class TextResponse extends React.Component {
   }
 }
 
+class AudioResponse extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return null;
+  }
+}
+
 class CategoryResponse extends React.PureComponent {
   render() {
     const { history, location, match } = this.props;
     // console.log("CategoryResponse:");
     // console.log(match);
     const currentCategory = getCurrentCategory(location);
+    const currentResponseType = getCurrentResponseType(location);
     return (
       <View
         style={[
@@ -337,7 +453,8 @@ class CategoryResponse extends React.PureComponent {
           <Text style={[styles.h2Text]}>What Verse stood out to you?</Text>
         </View>
 
-        <TextResponse />
+        {currentResponseType === "text" && <TextResponse />}
+        {currentResponseType === "audio" && <TextResponse />}
       </View>
     );
   }
@@ -366,13 +483,17 @@ class Category extends React.PureComponent {
 class Home extends React.PureComponent {
   render() {
     const { history, location, match } = this.props;
-    console.log("location:");
-    console.log(location);
+    // console.log("location:");
+    // console.log(location);
     const currentCategory = getCurrentCategory(location);
     return (
       <View style={[styles.container, { flex: 1, alignItems: "center" }]}>
         <ScriptureNav currentCategory={currentCategory} />
-        <Wheel history={history} currentCategory={currentCategory} />
+        <Wheel
+          history={history}
+          location={location}
+          currentCategory={currentCategory}
+        />
         <Route exact path="/category/:category" component={Category} />
         <Route
           exact
@@ -472,6 +593,8 @@ const FabIcon = ({ size, color }) => (
   <Image source={require("./assets/images/FAB.png")} style={FabSize(size)} />
 );
 
+const promptForResponseTypeKey = "promptForResponseType";
+
 class BottomFabWithoutRouter extends React.PureComponent {
   state = {
     open: false
@@ -503,16 +626,30 @@ class BottomFabWithoutRouter extends React.PureComponent {
   };
 
   onStateChange = ({ open }) => {
-    // console.log('onStateChange')
-    this.setState({ open });
+    // console.log(`onStateChange: ${open}`, this.props.location.state)
+    if (this.usesState()) {
+      this.setState({ open });
+    } else {
+      const location = this.props.location;
+      const state = location.state || {};
+      state[promptForResponseTypeKey] = !!open;
+      this.props.history.replace(
+        `${location.pathname}${location.search || ""}`,
+        Object.assign({}, state)
+      );
+    }
   };
+
+  usesState = () => QuadClickFlow === 5 && this.props.buster === "plus";
 
   render() {
     const { history, location, match, buster } = this.props;
     // console.log('routerProps')
     // console.log(routerProps)
     // const state = location.state || {}
-    const isExpanded = this.state.open;
+    const isExpanded = this.usesState()
+      ? this.state.open
+      : !!(this.props.location.state || {})[promptForResponseTypeKey];
     const currentCategory = getCurrentCategory(location);
     // console.log(`render fab: '${currentCategory}'`);
     if (buster === "plus" && !!currentCategory) {
@@ -627,16 +764,28 @@ const Quad = ({
   currentCategory,
   quadComponent: Comp,
   category,
+  location,
   history,
   onPress,
   pads
 }) => (
   <TouchableOpacity
-    onPress={() =>
-      !currentCategory
-        ? history.push(`/category/${category}`)
-        : history.replace(`/category/${category}`)
-    }
+    onPress={() => {
+      // console.log(`location: `, location)
+      if (currentCategory) {
+        const newLocation = location.pathname.replace(
+          currentCategory,
+          category
+        );
+        history.replace(newLocation);
+      } else if (QuadClickFlow === 5) {
+        const state = location.state || {};
+        state[promptForResponseTypeKey] = true;
+        history.push(`/category/${category}`, state);
+      } else {
+        history.push(`/category/${category}/response/text`);
+      }
+    }}
     activeOpacity={0.6}
   >
     <View
@@ -692,6 +841,7 @@ const Wheel = props => {
           quadComponent={ScriptureQuad}
           currentCategory={props.currentCategory}
           category={"scripture"}
+          location={props.location}
           history={props.history}
           pads={{
             paddingTop: imgPad * imgPadMod,
@@ -708,6 +858,7 @@ const Wheel = props => {
           quadComponent={ObservationQuad}
           currentCategory={props.currentCategory}
           category={"observation"}
+          location={props.location}
           history={props.history}
           pads={{
             paddingTop: imgPad * imgPadMod,
@@ -726,6 +877,7 @@ const Wheel = props => {
           quadComponent={PrayerQuad}
           currentCategory={props.currentCategory}
           category={"prayer"}
+          location={props.location}
           history={props.history}
           pads={{
             paddingTop: imgPad / imgPadMod,
@@ -743,6 +895,7 @@ const Wheel = props => {
           quadComponent={ApplicationQuad}
           currentCategory={props.currentCategory}
           category={"application"}
+          location={props.location}
           history={props.history}
           pads={{
             paddingTop: imgPad / imgPadMod,
@@ -779,12 +932,17 @@ export default class App extends React.Component {
           <View style={[styles.background, styles.centered, styles.container]}>
             <Background />
             <Titlebar />
+            //{" "}
             <View style={[styles.container, { flex: 1 }]}>
+              //{" "}
               <Switch>
-                <Route exact path="/feed" component={Feed} />
-                <Route component={Home} />
+                // <Route exact path="/feed" component={Feed} />
+                // <Route component={Home} />
+                //{" "}
               </Switch>
+              //{" "}
             </View>
+            <RecordingResponse />
             <BottomFab buster="plus" />
             <BottomFab buster="prayer" />
             <BottomFab buster="application" />
