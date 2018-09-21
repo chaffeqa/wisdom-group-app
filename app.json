@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "wisdom-group-app",
-    "description": "This project is really great.",
+    "description": "4Tucson Wisdom Group Application",
     "slug": "wisdom-group-app",
     "privacy": "public",
     "sdkVersion": "30.0.0",
@@ -20,6 +20,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "githubUrl": "https://github.com/chaffeqa/wisdom-group-app"
   }
 }

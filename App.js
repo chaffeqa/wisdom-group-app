@@ -358,11 +358,120 @@ class RecordingResponse extends React.Component {
     return padWithZero(minutes) + ":" + padWithZero(seconds);
   }
 
+  _updateScreenForSoundStatus = status => {
+    if (status.isLoaded) {
+      this.setState({
+        soundDuration: status.durationMillis,
+        soundPosition: status.positionMillis,
+        shouldPlay: status.shouldPlay,
+        isPlaying: status.isPlaying,
+        rate: status.rate,
+        muted: status.isMuted,
+        volume: status.volume,
+        shouldCorrectPitch: status.shouldCorrectPitch,
+        isPlaybackAllowed: true
+      });
+    } else {
+      this.setState({
+        soundDuration: null,
+        soundPosition: null,
+        isPlaybackAllowed: false
+      });
+      if (status.error) {
+        console.log(`FATAL PLAYER ERROR: ${status.error}`);
+      }
+    }
+  };
+
+  _updateScreenForRecordingStatus = status => {
+    if (status.canRecord) {
+      this.setState({
+        isRecording: status.isRecording,
+        recordingDuration: status.durationMillis
+      });
+    } else if (status.isDoneRecording) {
+      this.setState({
+        isRecording: false,
+        recordingDuration: status.durationMillis
+      });
+      if (!this.state.isLoading) {
+        this._stopRecordingAndEnablePlayback();
+      }
+    }
+  };
+
   _getRecordingTimestamp() {
     if (this.state.recordingDuration != null) {
       return `${this._getMMSSFromMillis(this.state.recordingDuration)}`;
     }
     return `${this._getMMSSFromMillis(0)}`;
+  }
+
+  async _stopPlaybackAndBeginRecording() {
+    this.setState({
+      isLoading: true
+    });
+    if (this.sound !== null) {
+      await this.sound.unloadAsync();
+      this.sound.setOnPlaybackStatusUpdate(null);
+      this.sound = null;
+    }
+    await Audio.setAudioModeAsync({
+      allowsRecordingIOS: true,
+      interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+      playsInSilentModeIOS: true,
+      shouldDuckAndroid: true,
+      interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX
+    });
+    if (this.recording !== null) {
+      this.recording.setOnRecordingStatusUpdate(null);
+      this.recording = null;
+    }
+
+    const recording = new Audio.Recording();
+    await recording.prepareToRecordAsync(this.recordingSettings);
+    recording.setOnRecordingStatusUpdate(this._updateScreenForRecordingStatus);
+
+    this.recording = recording;
+    await this.recording.startAsync(); // Will call this._updateScreenForRecordingStatus to update the screen.
+    this.setState({
+      isLoading: false
+    });
+  }
+
+  async _stopRecordingAndEnablePlayback() {
+    this.setState({
+      isLoading: true
+    });
+    try {
+      await this.recording.stopAndUnloadAsync();
+    } catch (error) {
+      // Do nothing -- we are already unloaded.
+    }
+    const info = await FileSystem.getInfoAsync(this.recording.getURI());
+    console.log(`FILE INFO: ${JSON.stringify(info)}`);
+    await Audio.setAudioModeAsync({
+      allowsRecordingIOS: false,
+      interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+      playsInSilentModeIOS: true,
+      playsInSilentLockedModeIOS: true,
+      shouldDuckAndroid: true,
+      interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX
+    });
+    const { sound, status } = await this.recording.createNewLoadedSound(
+      {
+        isLooping: true,
+        isMuted: this.state.muted,
+        volume: this.state.volume,
+        rate: this.state.rate,
+        shouldCorrectPitch: this.state.shouldCorrectPitch
+      },
+      this._updateScreenForSoundStatus
+    );
+    this.sound = sound;
+    this.setState({
+      isLoading: false
+    });
   }
 
   render() {
@@ -454,7 +563,7 @@ class CategoryResponse extends React.PureComponent {
         </View>
 
         {currentResponseType === "text" && <TextResponse />}
-        {currentResponseType === "audio" && <TextResponse />}
+        {currentResponseType === "audio" && <RecordingResponse />}
       </View>
     );
   }
@@ -937,12 +1046,12 @@ export default class App extends React.Component {
               //{" "}
               <Switch>
                 // <Route exact path="/feed" component={Feed} />
-                // <Route component={Home} />
+                <Route component={Home} />
                 //{" "}
               </Switch>
               //{" "}
             </View>
-            <RecordingResponse />
+            // <RecordingResponse />
             <BottomFab buster="plus" />
             <BottomFab buster="prayer" />
             <BottomFab buster="application" />
