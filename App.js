@@ -10,6 +10,7 @@ import {
   TouchableHighlight,
   Button as RnButton,
   TextInput,
+  KeyboardAvoidingView,
   Image
 } from "react-native";
 import { Constants, KeepAwake, Audio, Permissions } from "expo";
@@ -516,14 +517,16 @@ class TextResponse extends React.Component {
 
   render() {
     return (
-      <TextInput
-        style={[styles.container]}
-        placeholder="Enter your response..."
-        onChangeText={this.onTextChange}
-        multiline={true}
-        numberOfLines={6}
-        value={this.state.text}
-      />
+      <KeyboardAvoidingView enabled behavior="padding">
+        <TextInput
+          style={[styles.container]}
+          placeholder="Enter your response..."
+          onChangeText={this.onTextChange}
+          multiline={true}
+          numberOfLines={6}
+          value={this.state.text}
+        />
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -1041,17 +1044,13 @@ export default class App extends React.Component {
           <View style={[styles.background, styles.centered, styles.container]}>
             <Background />
             <Titlebar />
-            //{" "}
             <View style={[styles.container, { flex: 1 }]}>
-              //{" "}
               <Switch>
                 // <Route exact path="/feed" component={Feed} />
                 <Route component={Home} />
-                //{" "}
               </Switch>
-              //{" "}
             </View>
-            // <RecordingResponse />
+            {/*<RecordingResponse /> */}
             <BottomFab buster="plus" />
             <BottomFab buster="prayer" />
             <BottomFab buster="application" />

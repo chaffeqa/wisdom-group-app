@@ -440,7 +440,7 @@
     mv "~2"
     safe-json-stringify "~1"
 
-"@expo/dev-tools@^0.1.0-beta.10":
+"@expo/dev-tools@^0.1.4":
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/@expo/dev-tools/-/dev-tools-0.1.4.tgz#547ee923f9d9ce71516c8c4963c02acce4a7139a"
   dependencies:
@@ -2716,12 +2716,12 @@ expo-camera@~1.1.0:
     lodash.mapvalues "^4.6.0"
     prop-types "^15.6.0"
 
-expo-cli@^1.1.0-beta.6:
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/expo-cli/-/expo-cli-1.2.3.tgz#b41bf0e149ab9eab20d4f2c7342ad99d49fc0326"
+expo-cli@^2.1.3:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/expo-cli/-/expo-cli-2.1.3.tgz#f1370ce08054d0fd81c7683f43a60326ccba13d1"
   dependencies:
     "@expo/bunyan" "3.0.2"
-    "@expo/dev-tools" "^0.1.0-beta.10"
+    "@expo/dev-tools" "^0.1.4"
     "@expo/json-file" "^8.0.1"
     "@expo/simple-spinner" "^1.0.2"
     "@expo/spawn-async" "^1.3.0"
@@ -2747,7 +2747,7 @@ expo-cli@^1.1.0-beta.6:
     source-map-support "^0.4.1"
     untildify "^3.0.2"
     wordwrap "^1.0.0"
-    xdl "^51.2.3"
+    xdl "^51.3.1"
   optionalDependencies:
     "@expo/traveling-fastlane-darwin" "1.5.0"
     "@expo/traveling-fastlane-linux" "1.5.0"
@@ -7198,7 +7198,7 @@ xdg-basedir@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/xdg-basedir/-/xdg-basedir-3.0.0.tgz#496b2cc109eca8dbacfe2dc72b603c17c5870ad4"
 
-xdl@^51.2.3:
+xdl@^51.3.1:
   version "51.3.1"
   resolved "https://registry.yarnpkg.com/xdl/-/xdl-51.3.1.tgz#8cd7943620257efb0b3708e0c0df3ffcaca876c7"
   dependencies:
