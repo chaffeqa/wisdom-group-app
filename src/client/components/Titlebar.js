@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import {
   StyleSheet,
   Text,
@@ -12,9 +12,9 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Image
-} from "react-native";
-import { Constants, KeepAwake, Audio, Permissions } from "expo";
-import { Appbar } from "react-native-paper";
+} from "react-native"
+import { Constants, KeepAwake, Audio, Permissions } from "expo"
+import { Appbar } from "react-native-paper"
 
 import {
   NativeRouter,
@@ -22,14 +22,14 @@ import {
   Link,
   withRouter,
   Switch
-} from "react-router-native";
+} from "react-router-native"
 
 class TitlebarWithoutRouter extends React.PureComponent {
   _toggleDrawer = () => {};
   render() {
-    const { history, location, match, active } = this.props;
-    const parts = location.pathname.split("/");
-    const isBackable = parts.length > 2;
+    const { history, location, match, active } = this.props
+    const parts = location.pathname.split("/")
+    const isBackable = parts.length > 2
     return (
       <Appbar
         style={[
@@ -44,8 +44,8 @@ class TitlebarWithoutRouter extends React.PureComponent {
         )}
         <Appbar.Content title="Wisdom Group" subtitle="Mark's Group" />
       </Appbar>
-    );
+    )
   }
 }
 
-export default withRouter(TitlebarWithoutRouter);
+export default withRouter(TitlebarWithoutRouter)

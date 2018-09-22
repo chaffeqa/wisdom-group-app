@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import Svg, {
   Circle,
   Ellipse,
@@ -14,7 +14,7 @@ import Svg, {
   Use,
   Defs,
   Stop
-} from "react-native-svg";
+} from "react-native-svg"
 
 class CircleChooser extends React.Component {
   render() {
@@ -53,8 +53,8 @@ class CircleChooser extends React.Component {
           />
         </G>
       </Svg>
-    );
+    )
   }
 }
 
-export default CircleChooser;
+export default CircleChooser

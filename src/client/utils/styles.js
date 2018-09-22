@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet } from "react-native";
+import React from "react"
+import { StyleSheet } from "react-native"
 
 const styles = StyleSheet.create({
   background: {
@@ -58,6 +58,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
     padding: 10
   }
-});
+})
 
-export default styles;
+export default styles

@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import {
   StyleSheet,
   Text,
@@ -12,8 +12,8 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Image
-} from "react-native";
-import { Constants, KeepAwake, Audio, Permissions } from "expo";
+} from "react-native"
+import { Constants, KeepAwake, Audio, Permissions } from "expo"
 import {
   DefaultTheme,
   FABGroup,
@@ -36,9 +36,9 @@ import {
   TextInput as RNPTextInput,
   Icon,
   ToolbarAction
-} from "react-native-paper";
+} from "react-native-paper"
 
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 
 import Svg, {
   Circle,
@@ -55,29 +55,29 @@ import Svg, {
   Use,
   Defs,
   Stop
-} from "react-native-svg";
+} from "react-native-svg"
 
-import Selector from "./src/client/components/Selector";
-import InnerCircle from "./src/client/components/InnerCircle";
-import Drawer from "./src/client/components/Drawer";
-import PrayerQuad from "./src/client/components/PrayerQuad";
-import ObservationQuad from "./src/client/components/ObservationQuad";
-import ScriptureQuad from "./src/client/components/ScriptureQuad";
-import ApplicationQuad from "./src/client/components/ApplicationQuad";
-import ScriptureNav from "./src/client/components/ScriptureNav";
-import Category from "./src/client/components/Category";
-import CategoryResponse from "./src/client/components/CategoryResponse";
-import Wheel from "./src/client/components/Wheel";
-import Background from "./src/client/components/Background";
-import BottomFab from "./src/client/components/BottomFab";
-import Titlebar from "./src/client/components/Titlebar";
-import Feed from "./src/client/components/Feed";
-import { CategoriesArray, Categories } from "./src/client/utils/categories";
-import styles from "./src/client/utils/styles";
+import Selector from "./src/client/components/Selector"
+import InnerCircle from "./src/client/components/InnerCircle"
+import Drawer from "./src/client/components/Drawer"
+import PrayerQuad from "./src/client/components/PrayerQuad"
+import ObservationQuad from "./src/client/components/ObservationQuad"
+import ScriptureQuad from "./src/client/components/ScriptureQuad"
+import ApplicationQuad from "./src/client/components/ApplicationQuad"
+import ScriptureNav from "./src/client/components/ScriptureNav"
+import Category from "./src/client/components/Category"
+import CategoryResponse from "./src/client/components/CategoryResponse"
+import Wheel from "./src/client/components/Wheel"
+import Background from "./src/client/components/Background"
+import BottomFab from "./src/client/components/BottomFab"
+import Titlebar from "./src/client/components/Titlebar"
+import Feed from "./src/client/components/Feed"
+import { CategoriesArray, Categories } from "./src/client/utils/categories"
+import styles from "./src/client/utils/styles"
 import {
   getCurrentCategory,
   getCurrentResponseType
-} from "./src/client/utils/prop-utils";
+} from "./src/client/utils/prop-utils"
 
 import {
   NativeRouter,
@@ -85,7 +85,7 @@ import {
   Link,
   withRouter,
   Switch
-} from "react-router-native";
+} from "react-router-native"
 
 const theme = {
   ...DefaultTheme,
@@ -94,14 +94,14 @@ const theme = {
     primary: "white"
     // accent: 'yellow',
   }
-};
+}
 
 class Home extends React.PureComponent {
   render() {
-    const { history, location, match } = this.props;
+    const { history, location, match } = this.props
     // console.log("location:");
     // console.log(location);
-    const currentCategory = getCurrentCategory(location);
+    const currentCategory = getCurrentCategory(location)
     return (
       <View style={[styles.container, { flex: 1, alignItems: "center" }]}>
         <ScriptureNav currentCategory={currentCategory} />
@@ -117,7 +117,7 @@ class Home extends React.PureComponent {
           component={CategoryResponse}
         />
       </View>
-    );
+    )
   }
 }
 
@@ -131,7 +131,7 @@ export default class App extends React.Component {
             <Titlebar />
             <View style={[styles.container, { flex: 1 }]}>
               <Switch>
-                // <Route exact path="/feed" component={Feed} />
+                {/*<Route exact path="/feed" component={Feed} /> */}
                 <Route component={Home} />
               </Switch>
             </View>
@@ -146,6 +146,6 @@ export default class App extends React.Component {
         </NativeRouter>
         <KeepAwake />
       </PaperProvider>
-    );
+    )
   }
 }

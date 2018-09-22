@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import {
   StyleSheet,
   Text,
@@ -12,8 +12,8 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Image
-} from "react-native";
-import { Constants, KeepAwake, Audio, Permissions } from "expo";
+} from "react-native"
+import { Constants, KeepAwake, Audio, Permissions } from "expo"
 import {
   DefaultTheme,
   FABGroup,
@@ -36,11 +36,11 @@ import {
   TextInput as RNPTextInput,
   Icon,
   ToolbarAction
-} from "react-native-paper";
+} from "react-native-paper"
 
-import RecordingResponse from "./RecordingResponse";
-import TextResponse from "./TextResponse";
-import { CategoriesArray, Categories } from "../utils/categories";
+import RecordingResponse from "./RecordingResponse"
+import TextResponse from "./TextResponse"
+import { CategoriesArray, Categories } from "../utils/categories"
 
 import {
   NativeRouter,
@@ -48,30 +48,30 @@ import {
   Link,
   withRouter,
   Switch
-} from "react-router-native";
-import styles from "../utils/styles";
+} from "react-router-native"
+import styles from "../utils/styles"
 import {
   getCurrentCategory,
   getCurrentResponseType
-} from "../utils/prop-utils";
+} from "../utils/prop-utils"
 
 class Category extends React.PureComponent {
   render() {
-    const { history, location, match } = this.props;
+    const { history, location, match } = this.props
     // console.log("Category:");
     // console.log(match);
-    const currentCategory = getCurrentCategory(location);
+    const currentCategory = getCurrentCategory(location)
     return (
       <View
         style={[
           styles.container,
           styles.bgClear,
-          { flex: 1, alignItems: "center", alignItems: "center", width: 300 }
+          { flex: 1, alignItems: "center", width: 300 }
         ]}
       >
         <Text>Category: {JSON.stringify(match, null, 2)}</Text>
       </View>
-    );
+    )
   }
 }
-export default Category;
+export default Category

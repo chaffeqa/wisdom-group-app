@@ -1,5 +1,5 @@
-import * as React from "react";
-import { View, StyleSheet, Platform } from "react-native";
+import * as React from "react"
+import { View, StyleSheet, Platform } from "react-native"
 import {
   DrawerItem,
   DrawerSection,
@@ -8,7 +8,7 @@ import {
   TouchableRipple,
   Paragraph,
   Colors
-} from "react-native-paper";
+} from "react-native-paper"
 // import type { Theme } from 'react-native-paper/types';
 //
 // type Props = {
@@ -28,9 +28,9 @@ const DrawerItemsData = [
   { label: "Sent mail", icon: "send", key: 2 },
   { label: "Colored label", icon: "color-lens", key: 3 },
   { label: "A very long title that will be truncated", icon: "delete", key: 4 }
-];
+]
 
-class DrawerItems extends React.Component<Props, State> {
+class DrawerItems extends React.Component {
   state = {
     open: false,
     drawerItemIndex: 0,
@@ -40,8 +40,8 @@ class DrawerItems extends React.Component<Props, State> {
   _setDrawerItem = index => this.setState({ drawerItemIndex: index });
 
   _toggleTheme = () => {
-    this.props.toggleTheme();
-    this.setState({ isDark: !this.state.isDark });
+    this.props.toggleTheme()
+    this.setState({ isDark: !this.state.isDark })
   };
 
   render() {
@@ -49,7 +49,7 @@ class DrawerItems extends React.Component<Props, State> {
       theme: {
         colors: { paper }
       }
-    } = this.props;
+    } = this.props
     return (
       <View
         style={[
@@ -86,7 +86,7 @@ class DrawerItems extends React.Component<Props, State> {
           </TouchableRipple>
         </DrawerSection>
       </View>
-    );
+    )
   }
 }
 
@@ -95,6 +95,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: Platform.OS === "android" ? 25 : 22
   }
-});
+})
 
-export default withTheme(DrawerItems);
+export default withTheme(DrawerItems)

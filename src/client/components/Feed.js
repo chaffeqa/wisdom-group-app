@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import {
   StyleSheet,
   Text,
@@ -12,8 +12,8 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Image
-} from "react-native";
-import { Constants, KeepAwake, Audio, Permissions } from "expo";
+} from "react-native"
+import { Constants, KeepAwake, Audio, Permissions } from "expo"
 import {
   DefaultTheme,
   FABGroup,
@@ -36,9 +36,9 @@ import {
   TextInput as RNPTextInput,
   Icon,
   ToolbarAction
-} from "react-native-paper";
+} from "react-native-paper"
 
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 
 import Svg, {
   Circle,
@@ -55,7 +55,7 @@ import Svg, {
   Use,
   Defs,
   Stop
-} from "react-native-svg";
+} from "react-native-svg"
 
 import {
   NativeRouter,
@@ -63,7 +63,7 @@ import {
   Link,
   withRouter,
   Switch
-} from "react-router-native";
+} from "react-router-native"
 
 const styles = StyleSheet.create({
   background: {
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     padding: 10
   }
-});
+})
 
 class Feed extends React.Component {
   render() {
@@ -187,8 +187,8 @@ class Feed extends React.Component {
           </Card>
         </ScrollView>
       </View>
-    );
+    )
   }
 }
 
-export default Feed;
+export default Feed

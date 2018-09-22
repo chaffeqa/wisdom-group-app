@@ -1,7 +1,7 @@
-import React from "react";
-import Svg, { G, Path } from "react-native-svg";
-import tinycolor from "../utils/tinycolor";
-import colorBlend from "../utils/color-blend/blend";
+import React from "react"
+import Svg, { G, Path } from "react-native-svg"
+import tinycolor from "../utils/tinycolor"
+import colorBlend from "../utils/color-blend/blend"
 
 const base = [
   ["#8C698F", "M1091.17 2758.44l96.33-252.71-39.62-15.29z"],
@@ -258,7 +258,7 @@ const base = [
   ["#4EAAB3", "M753.52 53.22L749.61.61h-90.27z"],
   ["#1A9A6B", "M963.86 72.07L1037.14.61H924.88z"],
   ["#097760", "M1222.08 41.71l7.7-41.1h-39.95z"]
-];
+]
 
 // const blendColors = (baseHex, blendHex) => {
 //   const baseColor = tinycolor(baseHex)
@@ -1301,14 +1301,14 @@ const ColorMapping = {
     "#009f95",
     "#007871"
   ]
-};
+}
 
 const BackgroundPattern = ({ svgRef, category, ...props }) => (
   <Svg viewbox="0 0 100 100" ref={svgRef} {...props}>
     <G fillRule="nonzero" fill="none">
       {base.map((pair, index) => {
         const fill =
-          (ColorMapping[category] && ColorMapping[category][index]) || pair[0];
+          (ColorMapping[category] && ColorMapping[category][index]) || pair[0]
         // const baseColor = tinycolor(pair[0])
         // const backgroundColor = tinycolor('#0056A0')
         // // console.log(baseColor.toRgb())
@@ -1320,10 +1320,10 @@ const BackgroundPattern = ({ svgRef, category, ...props }) => (
         // const blended = colorBlend.color(baseColor.toRgb(), backgroundColor.toRgb())
         // const color = tinycolor(blended)
         // const fill = color.toHexString()
-        return <Path key={index} fill={fill} d={pair[1]} />;
+        return <Path key={index} fill={fill} d={pair[1]} />
       })}
     </G>
   </Svg>
-);
+)
 
-export default BackgroundPattern;
+export default BackgroundPattern

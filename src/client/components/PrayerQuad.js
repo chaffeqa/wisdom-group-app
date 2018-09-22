@@ -1,5 +1,5 @@
-import React from "react";
-import Svg, { G, Path } from "react-native-svg";
+import React from "react"
+import Svg, { G, Path } from "react-native-svg"
 const PrayerQuad = ({ svgRef, ...props }) => (
   <Svg viewBox="0 0 501 501" width="1em" height="1em" ref={svgRef} {...props}>
     <G fillRule="nonzero" fill="none">
@@ -17,6 +17,6 @@ const PrayerQuad = ({ svgRef, ...props }) => (
       </G>
     </G>
   </Svg>
-);
+)
 
-export default PrayerQuad;
+export default PrayerQuad

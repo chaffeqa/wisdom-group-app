@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import {
   StyleSheet,
   Text,
@@ -12,8 +12,8 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Image
-} from "react-native";
-import { Constants, KeepAwake, Audio, Permissions } from "expo";
+} from "react-native"
+import { Constants, KeepAwake, Audio, Permissions } from "expo"
 import {
   DefaultTheme,
   FAB,
@@ -37,9 +37,9 @@ import {
   TextInput as RNPTextInput,
   Icon,
   ToolbarAction
-} from "react-native-paper";
+} from "react-native-paper"
 
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 
 import Svg, {
   Circle,
@@ -56,13 +56,13 @@ import Svg, {
   Use,
   Defs,
   Stop
-} from "react-native-svg";
+} from "react-native-svg"
 
-import { CategoriesArray, Categories } from "../utils/categories";
+import { CategoriesArray, Categories } from "../utils/categories"
 import {
   getCurrentCategory,
   getCurrentResponseType
-} from "../utils/prop-utils";
+} from "../utils/prop-utils"
 
 import {
   NativeRouter,
@@ -70,15 +70,15 @@ import {
   Link,
   withRouter,
   Switch
-} from "react-router-native";
+} from "react-router-native"
 
-const QuadClickFlow = 1;
+const QuadClickFlow = 1
 const CategoryIcons = {
   prayer: require("../../../assets/images/prayer-icon.png"),
   scripture: require("../../../assets/images/scripture-icon.png"),
   application: require("../../../assets/images/application-icon.png"),
   observation: require("../../../assets/images/observation-icon.png")
-};
+}
 
 const buildCategoryIcon = name => ({ size, color }) => (
   <View
@@ -103,21 +103,21 @@ const buildCategoryIcon = name => ({ size, color }) => (
       }}
     />
   </View>
-);
+)
 
 const CategoryFabIcons = {
   prayer: buildCategoryIcon("prayer"),
   scripture: buildCategoryIcon("scripture"),
   application: buildCategoryIcon("application"),
   observation: buildCategoryIcon("observation")
-};
+}
 
 const FabSize = size => ({
   width: size * 3,
   height: size * 3,
   left: size * -1,
   top: size * -1
-});
+})
 const createFabIcon = name => ({ size, color }) => (
   <View
     pointerEvents="box-none"
@@ -142,23 +142,23 @@ const createFabIcon = name => ({ size, color }) => (
       }}
     />
   </View>
-);
+)
 
 const FabIcons = {
   prayer: createFabIcon("prayer"),
   scripture: createFabIcon("scripture"),
   application: createFabIcon("application"),
   observation: createFabIcon("observation")
-};
+}
 
 const FabIcon = ({ size, color }) => (
   <Image
     source={require("../../../assets/images/FAB.png")}
     style={FabSize(size)}
   />
-);
+)
 
-const promptForResponseTypeKey = "promptForResponseType";
+const promptForResponseTypeKey = "promptForResponseType"
 
 class BottomFabWithoutRouter extends React.PureComponent {
   state = {
@@ -167,18 +167,18 @@ class BottomFabWithoutRouter extends React.PureComponent {
 
   fabActionPress = action => () => {
     // console.log("fabActionPress: " + action);
-    const { history, location, match } = this.props;
-    const currentCategory = getCurrentCategory(location);
+    const { history, location, match } = this.props
+    const currentCategory = getCurrentCategory(location)
     if (Categories[action]) {
-      const pathname = `/category/${action}`;
+      const pathname = `/category/${action}`
       if (currentCategory) {
-        history.replace(pathname);
+        history.replace(pathname)
       } else {
-        history.push(pathname);
+        history.push(pathname)
       }
     }
     if (/audio|video|picture|text/.test(action)) {
-      history.push(`/category/${currentCategory}/response/${action}`);
+      history.push(`/category/${currentCategory}/response/${action}`)
     }
     // console.log(event);
   };
@@ -193,73 +193,73 @@ class BottomFabWithoutRouter extends React.PureComponent {
   onStateChange = ({ open }) => {
     // console.log(`onStateChange: ${open}`, this.props.location.state)
     if (this.usesState()) {
-      this.setState({ open });
+      this.setState({ open })
     } else {
-      const location = this.props.location;
-      const state = location.state || {};
-      state[promptForResponseTypeKey] = !!open;
+      const location = this.props.location
+      const state = location.state || {}
+      state[promptForResponseTypeKey] = !!open
       this.props.history.replace(
         `${location.pathname}${location.search || ""}`,
         Object.assign({}, state)
-      );
+      )
     }
   };
 
   usesState = () => QuadClickFlow === 5 && this.props.buster === "plus";
 
   render() {
-    const { history, location, match, buster } = this.props;
+    const { history, location, match, buster } = this.props
     // console.log('routerProps')
     // console.log(routerProps)
     // const state = location.state || {}
     const isExpanded = this.usesState()
       ? this.state.open
-      : !!(this.props.location.state || {})[promptForResponseTypeKey];
-    const currentCategory = getCurrentCategory(location);
+      : !!(this.props.location.state || {})[promptForResponseTypeKey]
+    const currentCategory = getCurrentCategory(location)
     // console.log(`render fab: '${currentCategory}'`);
     if (buster === "plus" && !!currentCategory) {
-      return null;
+      return null
     }
     if (buster !== "plus" && buster !== currentCategory) {
-      return null;
+      return null
     }
 
     const actions = currentCategory
       ? [
-          {
-            icon: "mic",
-            label: "Audio",
-            key: "audio",
-            onPress: this.fabActionPress("audio")
-          },
-          {
-            icon: "videocam",
-            label: "Video",
-            key: "video",
-            onPress: this.fabActionPress("video")
-          },
-          {
-            icon: "camera-alt",
-            label: "Picture",
-            key: "picture",
-            onPress: this.fabActionPress("picture")
-          },
-          {
-            icon: "edit",
-            label: "Text",
-            key: "text",
-            onPress: this.fabActionPress("text")
-          }
-        ]
+        {
+          icon: "mic",
+          label: "Audio",
+          key: "audio",
+          onPress: this.fabActionPress("audio")
+        },
+        {
+          icon: "videocam",
+          label: "Video",
+          key: "video",
+          onPress: this.fabActionPress("video")
+        },
+        {
+          icon: "camera-alt",
+          label: "Picture",
+          key: "picture",
+          onPress: this.fabActionPress("picture")
+        },
+        {
+          icon: "edit",
+          label: "Text",
+          key: "text",
+          onPress: this.fabActionPress("text")
+        }
+      ]
       : CategoriesArray.map(category => {
-          return {
-            icon: CategoryFabIcons[category.key],
-            label: category.label,
-            color: category.color,
-            key: category.key,
-            onPress: this.fabActionPress(category.key)
-          };
-        });
+        return {
+          icon: CategoryFabIcons[category.key],
+          label: category.label,
+          color: category.color,
+          key: category.key,
+          onPress: this.fabActionPress(category.key)
+        }
+      })
     return (
       <Portal>
         <FAB.Group
@@ -273,7 +273,7 @@ class BottomFabWithoutRouter extends React.PureComponent {
           onPress={this.onFabPress}
         />
       </Portal>
-    );
+    )
   }
 }
-export default withRouter(BottomFabWithoutRouter);
+export default withRouter(BottomFabWithoutRouter)

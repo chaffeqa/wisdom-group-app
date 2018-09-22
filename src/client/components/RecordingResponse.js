@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import {
   StyleSheet,
   Text,
@@ -12,8 +12,8 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Image
-} from "react-native";
-import { Constants, KeepAwake, Audio, Permissions } from "expo";
+} from "react-native"
+import { Constants, KeepAwake, Audio, Permissions, FileSystem } from "expo"
 import {
   DefaultTheme,
   FABGroup,
@@ -36,9 +36,9 @@ import {
   TextInput as RNPTextInput,
   Icon,
   ToolbarAction
-} from "react-native-paper";
+} from "react-native-paper"
 
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 
 import Svg, {
   Circle,
@@ -55,32 +55,32 @@ import Svg, {
   Use,
   Defs,
   Stop
-} from "react-native-svg";
+} from "react-native-svg"
 
-const pathnameCategoryMatcher = /category\/([a-z]*)/;
+const pathnameCategoryMatcher = /category\/([a-z]*)/
 const getCurrentCategory = location => {
-  const match = pathnameCategoryMatcher.exec(location.pathname);
-  return match ? match[1] : null;
-};
-const pathnameResponseTypeMatcher = /response\/([a-z]*)/;
+  const match = pathnameCategoryMatcher.exec(location.pathname)
+  return match ? match[1] : null
+}
+const pathnameResponseTypeMatcher = /response\/([a-z]*)/
 const getCurrentResponseType = location => {
-  const match = pathnameResponseTypeMatcher.exec(location.pathname);
-  return match ? match[1] : null;
-};
+  const match = pathnameResponseTypeMatcher.exec(location.pathname)
+  return match ? match[1] : null
+}
 const padWithZero = number => {
-  const string = number.toString();
+  const string = number.toString()
   if (number < 10) {
-    return "0" + string;
+    return "0" + string
   }
-  return string;
-};
+  return string
+}
 class RecordingResponse extends React.Component {
   constructor(props) {
-    super(props);
-    this.recording = null;
-    this.sound = null;
-    this.isSeeking = false;
-    this.shouldPlayAtEndOfSeek = false;
+    super(props)
+    this.recording = null
+    this.sound = null
+    this.isSeeking = false
+    this.shouldPlayAtEndOfSeek = false
     this.state = {
       haveRecordingPermissions: false,
       isLoading: false,
@@ -96,34 +96,34 @@ class RecordingResponse extends React.Component {
       shouldCorrectPitch: true,
       volume: 1.0,
       rate: 1.0
-    };
+    }
     this.recordingSettings = JSON.parse(
       JSON.stringify(Audio.RECORDING_OPTIONS_PRESET_LOW_QUALITY)
-    );
+    )
     // // UNCOMMENT THIS TO TEST maxFileSize:
     // this.recordingSettings.android['maxFileSize'] = 12000;
   }
 
   _askForPermissions = async () => {
-    const response = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
+    const response = await Permissions.askAsync(Permissions.AUDIO_RECORDING)
     this.setState({
       haveRecordingPermissions: response.status === "granted"
-    });
+    })
   };
 
   _onRecordPressed = () => {
     if (this.state.isRecording) {
-      this._stopRecordingAndEnablePlayback();
+      this._stopRecordingAndEnablePlayback()
     } else {
-      this._stopPlaybackAndBeginRecording();
+      this._stopPlaybackAndBeginRecording()
     }
   };
 
   _getMMSSFromMillis(millis) {
-    const totalSeconds = millis / 1000;
-    const seconds = Math.floor(totalSeconds % 60);
-    const minutes = Math.floor(totalSeconds / 60);
-    return padWithZero(minutes) + ":" + padWithZero(seconds);
+    const totalSeconds = millis / 1000
+    const seconds = Math.floor(totalSeconds % 60)
+    const minutes = Math.floor(totalSeconds / 60)
+    return padWithZero(minutes) + ":" + padWithZero(seconds)
   }
 
   _updateScreenForSoundStatus = status => {
@@ -138,15 +138,15 @@ class RecordingResponse extends React.Component {
         volume: status.volume,
         shouldCorrectPitch: status.shouldCorrectPitch,
         isPlaybackAllowed: true
-      });
+      })
     } else {
       this.setState({
         soundDuration: null,
         soundPosition: null,
         isPlaybackAllowed: false
-      });
+      })
       if (status.error) {
-        console.log(`FATAL PLAYER ERROR: ${status.error}`);
+        console.log(`FATAL PLAYER ERROR: ${status.error}`)
       }
     }
   };
@@ -156,33 +156,33 @@ class RecordingResponse extends React.Component {
       this.setState({
         isRecording: status.isRecording,
         recordingDuration: status.durationMillis
-      });
+      })
     } else if (status.isDoneRecording) {
       this.setState({
         isRecording: false,
         recordingDuration: status.durationMillis
-      });
+      })
       if (!this.state.isLoading) {
-        this._stopRecordingAndEnablePlayback();
+        this._stopRecordingAndEnablePlayback()
       }
     }
   };
 
   _getRecordingTimestamp() {
     if (this.state.recordingDuration != null) {
-      return `${this._getMMSSFromMillis(this.state.recordingDuration)}`;
+      return `${this._getMMSSFromMillis(this.state.recordingDuration)}`
     }
-    return `${this._getMMSSFromMillis(0)}`;
+    return `${this._getMMSSFromMillis(0)}`
   }
 
   async _stopPlaybackAndBeginRecording() {
     this.setState({
       isLoading: true
-    });
+    })
     if (this.sound !== null) {
-      await this.sound.unloadAsync();
-      this.sound.setOnPlaybackStatusUpdate(null);
-      this.sound = null;
+      await this.sound.unloadAsync()
+      this.sound.setOnPlaybackStatusUpdate(null)
+      this.sound = null
     }
     await Audio.setAudioModeAsync({
       allowsRecordingIOS: true,
@@ -190,34 +190,34 @@ class RecordingResponse extends React.Component {
       playsInSilentModeIOS: true,
       shouldDuckAndroid: true,
       interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX
-    });
+    })
     if (this.recording !== null) {
-      this.recording.setOnRecordingStatusUpdate(null);
-      this.recording = null;
+      this.recording.setOnRecordingStatusUpdate(null)
+      this.recording = null
     }
 
-    const recording = new Audio.Recording();
-    await recording.prepareToRecordAsync(this.recordingSettings);
-    recording.setOnRecordingStatusUpdate(this._updateScreenForRecordingStatus);
+    const recording = new Audio.Recording()
+    await recording.prepareToRecordAsync(this.recordingSettings)
+    recording.setOnRecordingStatusUpdate(this._updateScreenForRecordingStatus)
 
-    this.recording = recording;
-    await this.recording.startAsync(); // Will call this._updateScreenForRecordingStatus to update the screen.
+    this.recording = recording
+    await this.recording.startAsync() // Will call this._updateScreenForRecordingStatus to update the screen.
     this.setState({
       isLoading: false
-    });
+    })
   }
 
   async _stopRecordingAndEnablePlayback() {
     this.setState({
       isLoading: true
-    });
+    })
     try {
-      await this.recording.stopAndUnloadAsync();
+      await this.recording.stopAndUnloadAsync()
     } catch (error) {
       // Do nothing -- we are already unloaded.
     }
-    const info = await FileSystem.getInfoAsync(this.recording.getURI());
-    console.log(`FILE INFO: ${JSON.stringify(info)}`);
+    const info = await FileSystem.getInfoAsync(this.recording.getURI())
+    console.log(`FILE INFO: ${JSON.stringify(info)}`)
     await Audio.setAudioModeAsync({
       allowsRecordingIOS: false,
       interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
@@ -225,7 +225,7 @@ class RecordingResponse extends React.Component {
       playsInSilentLockedModeIOS: true,
       shouldDuckAndroid: true,
       interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX
-    });
+    })
     const { sound, status } = await this.recording.createNewLoadedSound(
       {
         isLooping: true,
@@ -235,11 +235,11 @@ class RecordingResponse extends React.Component {
         shouldCorrectPitch: this.state.shouldCorrectPitch
       },
       this._updateScreenForSoundStatus
-    );
-    this.sound = sound;
+    )
+    this.sound = sound
     this.setState({
       isLoading: false
-    });
+    })
   }
 
   render() {
@@ -268,6 +268,6 @@ class RecordingResponse extends React.Component {
         </View>
         <View />
       </View>
-    );
+    )
   }
 }

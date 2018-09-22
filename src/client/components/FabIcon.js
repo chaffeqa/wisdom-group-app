@@ -1,5 +1,5 @@
-import React from "react";
-import Svg, { G, Path } from "react-native-svg";
+import React from "react"
+import Svg, { G, Path } from "react-native-svg"
 const FabIcon = ({ svgRef, ...props }) => (
   <Svg viewBox="0 0 200 200" width="1em" height="1em" ref={svgRef} {...props}>
     <G fillRule="nonzero" fill="none">
@@ -13,6 +13,6 @@ const FabIcon = ({ svgRef, ...props }) => (
       />
     </G>
   </Svg>
-);
+)
 
-export default FabIcon;
+export default FabIcon

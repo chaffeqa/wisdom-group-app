@@ -1,5 +1,5 @@
-import React from "react";
-import Svg, { G, Path } from "react-native-svg";
+import React from "react"
+import Svg, { G, Path } from "react-native-svg"
 const ObservationQuad = ({ svgRef, ...props }) => (
   <Svg viewBox="0 0 501 500" width="1em" height="1em" ref={svgRef} {...props}>
     <G fillRule="nonzero" fill="none">
@@ -17,6 +17,6 @@ const ObservationQuad = ({ svgRef, ...props }) => (
       </G>
     </G>
   </Svg>
-);
+)
 
-export default ObservationQuad;
+export default ObservationQuad

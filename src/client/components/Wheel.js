@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import {
   StyleSheet,
   Text,
@@ -12,8 +12,8 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Image
-} from "react-native";
-import { Constants, KeepAwake, Audio, Permissions } from "expo";
+} from "react-native"
+import { Constants, KeepAwake, Audio, Permissions } from "expo"
 import {
   DefaultTheme,
   FABGroup,
@@ -36,9 +36,9 @@ import {
   TextInput as RNPTextInput,
   Icon,
   ToolbarAction
-} from "react-native-paper";
+} from "react-native-paper"
 
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 
 import Svg, {
   Circle,
@@ -55,19 +55,19 @@ import Svg, {
   Use,
   Defs,
   Stop
-} from "react-native-svg";
+} from "react-native-svg"
 
-import { CategoriesArray, Categories } from "../utils/categories";
-import PrayerQuad from "./PrayerQuad";
-import ObservationQuad from "./ObservationQuad";
-import ScriptureQuad from "./ScriptureQuad";
-import ApplicationQuad from "./ApplicationQuad";
-import InnerCircle from "./InnerCircle";
-import styles from "../utils/styles";
+import { CategoriesArray, Categories } from "../utils/categories"
+import PrayerQuad from "./PrayerQuad"
+import ObservationQuad from "./ObservationQuad"
+import ScriptureQuad from "./ScriptureQuad"
+import ApplicationQuad from "./ApplicationQuad"
+import InnerCircle from "./InnerCircle"
+import styles from "../utils/styles"
 import {
   getCurrentCategory,
   getCurrentResponseType
-} from "../utils/prop-utils";
+} from "../utils/prop-utils"
 
 import {
   NativeRouter,
@@ -75,18 +75,18 @@ import {
   Link,
   withRouter,
   Switch
-} from "react-router-native";
+} from "react-router-native"
 
-const QuadClickFlow = 1;
+const QuadClickFlow = 1
 
 const QuadIcons = {
   prayer: require("../../../assets/images/prayer-quad.png"),
   scripture: require("../../../assets/images/scripture-quad.png"),
   application: require("../../../assets/images/application-quad.png"),
   observation: require("../../../assets/images/observation-quad.png")
-};
+}
 
-const promptForResponseTypeKey = "promptForResponseType";
+const promptForResponseTypeKey = "promptForResponseType"
 
 const Quad = ({
   w,
@@ -108,14 +108,14 @@ const Quad = ({
         const newLocation = location.pathname.replace(
           currentCategory,
           category
-        );
-        history.replace(newLocation);
+        )
+        history.replace(newLocation)
       } else if (QuadClickFlow === 5) {
-        const state = location.state || {};
-        state[promptForResponseTypeKey] = true;
-        history.push(`/category/${category}`, state);
+        const state = location.state || {}
+        state[promptForResponseTypeKey] = true
+        history.push(`/category/${category}`, state)
       } else {
-        history.push(`/category/${category}/response/text`);
+        history.push(`/category/${category}/response/text`)
       }
     }}
     activeOpacity={0.6}
@@ -149,19 +149,19 @@ const Quad = ({
       </View>
     </View>
   </TouchableOpacity>
-);
+)
 
 const Wheel = props => {
-  const { width, height } = Dimensions.get("window");
-  const svgW = 1030;
-  const svgH = 1030;
-  const ww = width / 10;
-  const w = Math.round(width * 0.85);
-  const h = Math.round(width * 0.85);
-  const margin = (width - w) / 2 + Constants.statusBarHeight;
-  const imageWidth = (w / 2) * 0.5;
-  const imgPad = w / 9.5;
-  const imgPadMod = 1.35;
+  const { width, height } = Dimensions.get("window")
+  const svgW = 1030
+  const svgH = 1030
+  const ww = width / 10
+  const w = Math.round(width * 0.85)
+  const h = Math.round(width * 0.85)
+  const margin = (width - w) / 2 + Constants.statusBarHeight
+  const imageWidth = (w / 2) * 0.5
+  const imgPad = w / 9.5
+  const imgPadMod = 1.35
   return (
     <View style={[styles.centered, { width: w, height: h }]}>
       <View style={{ width: w, height: w / 2, flexDirection: "row" }}>
@@ -253,7 +253,7 @@ const Wheel = props => {
         <InnerCircle width={w} height={h} viewBox={`0 0 ${svgW} ${svgH}`} />
       </TouchableOpacity>
     </View>
-  );
-};
+  )
+}
 
-export default Wheel;
+export default Wheel

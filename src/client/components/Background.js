@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import {
   StyleSheet,
   Text,
@@ -12,8 +12,8 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Image
-} from "react-native";
-import { Constants, KeepAwake, Audio, Permissions } from "expo";
+} from "react-native"
+import { Constants, KeepAwake, Audio, Permissions } from "expo"
 import {
   DefaultTheme,
   FABGroup,
@@ -36,10 +36,10 @@ import {
   TextInput as RNPTextInput,
   Icon,
   ToolbarAction
-} from "react-native-paper";
+} from "react-native-paper"
 
-import styles from "../utils/styles";
-import { getCurrentCategory } from "../utils/prop-utils";
+import styles from "../utils/styles"
+import { getCurrentCategory } from "../utils/prop-utils"
 
 import {
   NativeRouter,
@@ -47,16 +47,16 @@ import {
   Link,
   withRouter,
   Switch
-} from "react-router-native";
-import BackgroundPattern from "./BackgroundPattern";
+} from "react-router-native"
+import BackgroundPattern from "./BackgroundPattern"
 
 const BackgroundWithoutRouter = ({ location }) => {
-  const { width, height } = Dimensions.get("window");
-  const category = getCurrentCategory(location);
-  const svgW = 1200;
-  const svgH = 2500;
-  const w = Math.round(width * 1.2);
-  const h = Math.round(height * 1.2);
+  const { width, height } = Dimensions.get("window")
+  const category = getCurrentCategory(location)
+  const svgW = 1200
+  const svgH = 2500
+  const w = Math.round(width * 1.2)
+  const h = Math.round(height * 1.2)
   return (
     <View style={[styles.container, styles.centered, { position: "absolute" }]}>
       <BackgroundPattern
@@ -66,6 +66,6 @@ const BackgroundWithoutRouter = ({ location }) => {
         viewBox={`0 0 ${svgW} ${svgH}`}
       />
     </View>
-  );
-};
-export default withRouter(BackgroundWithoutRouter);
+  )
+}
+export default withRouter(BackgroundWithoutRouter)

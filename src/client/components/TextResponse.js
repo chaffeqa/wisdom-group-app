@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 import {
   StyleSheet,
   Text,
@@ -12,7 +12,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Image
-} from "react-native";
+} from "react-native"
 import {
   DefaultTheme,
   FABGroup,
@@ -35,18 +35,18 @@ import {
   TextInput as RNPTextInput,
   Icon,
   ToolbarAction
-} from "react-native-paper";
+} from "react-native-paper"
 
-import styles from "../utils/styles";
+import styles from "../utils/styles"
 
 class TextResponse extends React.Component {
   constructor(props) {
-    super(props);
-    this.state = { text: "" };
+    super(props)
+    this.state = { text: "" }
   }
 
   onTextChange = text => {
-    this.setState({ text });
+    this.setState({ text })
   };
 
   render() {
@@ -61,6 +61,6 @@ class TextResponse extends React.Component {
           value={this.state.text}
         />
       </KeyboardAvoidingView>
-    );
+    )
   }
 }

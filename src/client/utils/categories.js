@@ -19,11 +19,11 @@ export const Categories = {
     key: "application",
     label: "Application"
   }
-};
+}
 
 export const CategoriesArray = [
   Categories.prayer,
   Categories.scripture,
   Categories.observation,
   Categories.application
-];
+]

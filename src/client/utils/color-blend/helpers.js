@@ -8,7 +8,7 @@
  * @return {number}       The restricted value
  */
 function restrictNumber(value, from, to) {
-  return Math.min(Math.max(value, from), to);
+  return Math.min(Math.max(value, from), to)
 }
 
 const helpers = {
@@ -23,7 +23,7 @@ const helpers = {
       g: restrictNumber(color.g, 0, 255),
       b: restrictNumber(color.b, 0, 255),
       a: restrictNumber(color.a, 0, 1)
-    };
+    }
   },
 
   /**
@@ -37,7 +37,7 @@ const helpers = {
       g: color.g * 255,
       b: color.b * 255,
       a: color.a
-    };
+    }
   },
 
   /**
@@ -51,7 +51,7 @@ const helpers = {
       g: color.g / 255,
       b: color.b / 255,
       a: color.a
-    };
+    }
   },
 
   /**
@@ -61,16 +61,16 @@ const helpers = {
    * @return {object}           The { r,g,b,a } with rounded color channels
    */
   roundChannels: function(color, precision) {
-    if (precision == null) precision = 0;
+    if (precision == null) precision = 0
 
-    var multiplier = Math.pow(10, precision);
+    var multiplier = Math.pow(10, precision)
 
     return {
       r: Math.round(color.r * multiplier) / multiplier,
       g: Math.round(color.g * multiplier) / multiplier,
       b: Math.round(color.b * multiplier) / multiplier,
       a: color.a
-    };
+    }
   },
 
   /**
@@ -79,8 +79,8 @@ const helpers = {
    * @return {object}       The { r,g,b,a } with rounded color channels
    */
   roundChannelsForSanity: function(color) {
-    return this.roundChannels(color, 9);
+    return this.roundChannels(color, 9)
   }
-};
+}
 
-export default helpers;
+export default helpers

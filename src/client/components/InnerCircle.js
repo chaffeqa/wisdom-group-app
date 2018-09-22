@@ -1,5 +1,5 @@
-import React from "react";
-import Svg, { G, Circle, Path } from "react-native-svg";
+import React from "react"
+import Svg, { G, Circle, Path } from "react-native-svg"
 const InnerCircle = ({ svgRef, ...props }) => (
   <Svg viewBox="0 0 240 240" width="1em" height="1em" ref={svgRef} {...props}>
     <G fillRule="nonzero" fill="none">
@@ -127,6 +127,6 @@ const InnerCircle = ({ svgRef, ...props }) => (
       />
     </G>
   </Svg>
-);
+)
 
-export default InnerCircle;
+export default InnerCircle
