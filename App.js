@@ -4,58 +4,16 @@ import {
   Text,
   View,
   ScrollView,
+  Button,
   SafeAreaView,
-  Dimensions,
-  TouchableOpacity,
-  TouchableHighlight,
-  Button as RnButton,
-  TextInput,
-  KeyboardAvoidingView,
-  Image
 } from "react-native"
 import { Constants, KeepAwake, Audio, Permissions } from "expo"
 import {
-  DefaultTheme,
-  FABGroup,
   Provider as PaperProvider,
-  Title,
-  Caption,
-  Paragraph,
-  Card,
-  CardCover,
-  CardActions,
-  CardContent,
-  Button,
-  withTheme,
-  ClipPath,
-  DrawerSection,
-  DrawerItem,
-  Toolbar,
-  ToolbarBackAction,
-  ToolbarContent,
-  TextInput as RNPTextInput,
-  Icon,
-  ToolbarAction
+  DefaultTheme,
 } from "react-native-paper"
 
-import MaterialIcons from "react-native-vector-icons/MaterialIcons"
-
-import Svg, {
-  Circle,
-  Ellipse,
-  G,
-  LinearGradient,
-  RadialGradient,
-  Line,
-  Path,
-  Polygon,
-  Polyline,
-  Rect,
-  Symbol,
-  Use,
-  Defs,
-  Stop
-} from "react-native-svg"
+import { createStackNavigator, createSwitchNavigator, createDrawerNavigator , withNavigation} from 'react-navigation';
 
 import Selector from "./src/client/components/Selector"
 import InnerCircle from "./src/client/components/InnerCircle"
@@ -76,16 +34,12 @@ import { CategoriesArray, Categories } from "./src/client/utils/categories"
 import styles from "./src/client/utils/styles"
 import {
   getCurrentCategory,
-  getCurrentResponseType
+  getCurrentResponseType,
+  goTo,
 } from "./src/client/utils/prop-utils"
+import { useScreens } from 'react-native-screens';
 
-import {
-  NativeRouter,
-  Route,
-  Link,
-  withRouter,
-  Switch
-} from "react-router-native"
+useScreens();
 
 const theme = {
   ...DefaultTheme,
@@ -96,56 +50,161 @@ const theme = {
   }
 }
 
-class Home extends React.PureComponent {
+
+class LayoutWithoutRouter extends React.PureComponent {
   render() {
-    const { history, location, match } = this.props
-    // console.log("location:");
-    // console.log(location);
-    const currentCategory = getCurrentCategory(location)
+    const {navigation} = this.props
+    const category = getCurrentCategory(this.props)
+    return (
+      <View style={[styles.background, styles.centered, styles.container]}>
+        <Background category={category} />
+        <View style={[styles.container, { flex: 1 }]}>
+          {this.props.children}
+        </View>
+        <BottomFab buster="plus" navigation={navigation} />
+        <BottomFab buster="prayer" navigation={navigation} />
+        <BottomFab buster="application" navigation={navigation} />
+        <BottomFab buster="observation" navigation={navigation} />
+        <BottomFab buster="scripture" navigation={navigation} />
+      </View>
+    );
+  }
+}
+const Layout = withNavigation(LayoutWithoutRouter)
+
+class CategoryResponseScreen extends React.Component {
+  static navigationOptions = {
+    drawerLabel: 'Home',
+    title: "Category",
+  };
+  render() {
     return (
       <View style={[styles.container, { flex: 1, alignItems: "center" }]}>
-        <ScriptureNav currentCategory={currentCategory} />
-        <Wheel
-          history={history}
-          location={location}
-          currentCategory={currentCategory}
-        />
-        <Route exact path="/category/:category" component={Category} />
-        <Route
-          exact
-          path="/category/:category/response/:response"
-          component={CategoryResponse}
+        <Text>CategoryResponse Screen!</Text>
+        <Text>state: {JSON.stringify(this.props.navigation.state, null, 2)}</Text>
+          <Button
+          onPress={() => this.props.navigation.goBack()}
+          title="Go back"
         />
       </View>
-    )
+    );
+  }
+}
+class CategoryScreen extends React.Component {
+  static navigationOptions = {
+    drawerLabel: 'Home',
+    title: "Category",
+  };
+  render() {
+    return (
+      <Layout>
+        <View style={[styles.container, { flex: 1, alignItems: "center" }]}>
+          <Text>Category Screen!</Text>
+          <Text>state: {JSON.stringify(this.props.navigation.state, null, 2)}</Text>
+            <Button
+            onPress={() => goTo('/', this.props)}
+            title="Go back"
+          />
+        </View>
+        
+      </Layout>
+    );
+  }
+}
+class WheelScreen extends React.Component {
+  static navigationOptions = {
+    drawerLabel: 'Home',
+    title: "Home",
+  };
+  render() {
+    return (
+      <Layout>
+        <View style={[styles.container, { flex: 1, alignItems: "center" }]}>
+          <ScriptureNav currentCategory={null} />
+          <Wheel
+            navigation={this.props.navigation}
+            currentCategory={null}
+          />
+        </View>
+      </Layout>
+    );
+  }
+}
+class FeedScreen extends React.Component {
+  static navigationOptions = {
+    drawerLabel: 'Feed',
+    title: "Feed"
+  };
+  render() {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Feed Screen!</Text>
+          <Button
+          onPress={() => goTo('/', this.props)}
+          title="Go back home"
+        />
+      </View>
+    );
   }
 }
 
-export default class App extends React.Component {
+const CategoryStack = createStackNavigator({
+  Category: {
+    screen: CategoryScreen,
+    path: '/category/:category'
+  },
+  CategoryResponse: {
+    screen: CategoryResponseScreen,
+    path: '/category/:category/response/:response'
+  },
+},
+{
+  initialRouteName: 'Category',
+  mode: 'modal',
+  navigationOptions: {
+    header: null,
+  },
+})
+const WheelStack = createStackNavigator({
+  Wheel: {
+    screen: WheelScreen,
+    path: '/'
+  },
+  Category: CategoryStack
+},
+{
+  initialRouteName: 'Wheel',
+})
+const FeedStack = createStackNavigator({
+  Feed: {
+    screen: FeedScreen,
+    path: '/feed'
+  }
+},
+{
+  initialRouteName: 'Feed',
+})
+
+const RootStack = createDrawerNavigator({
+  Wheel: WheelStack,
+  Feed: FeedStack,
+},
+{
+  initialRouteName: 'Wheel',
+  contentOptions: {
+  }
+});
+
+
+class App extends React.Component {
   render() {
     return (
       <PaperProvider theme={theme}>
-        <NativeRouter>
-          <View style={[styles.background, styles.centered, styles.container]}>
-            <Background />
-            <Titlebar />
-            <View style={[styles.container, { flex: 1 }]}>
-              <Switch>
-                {/*<Route exact path="/feed" component={Feed} /> */}
-                <Route component={Home} />
-              </Switch>
-            </View>
-            {/*<RecordingResponse /> */}
-            <BottomFab buster="plus" />
-            <BottomFab buster="prayer" />
-            <BottomFab buster="application" />
-            <BottomFab buster="observation" />
-            <BottomFab buster="scripture" />
-            {/* <Drawer open={true} /> */}
-          </View>
-        </NativeRouter>
+        <RootStack />
         <KeepAwake />
       </PaperProvider>
     )
   }
 }
+
+export default App

@@ -66,16 +66,10 @@ import InnerCircle from "./InnerCircle"
 import styles from "../utils/styles"
 import {
   getCurrentCategory,
+  goTo,
   getCurrentResponseType
 } from "../utils/prop-utils"
 
-import {
-  NativeRouter,
-  Route,
-  Link,
-  withRouter,
-  Switch
-} from "react-router-native"
 
 const QuadClickFlow = 1
 
@@ -96,28 +90,12 @@ const Quad = ({
   currentCategory,
   quadComponent: Comp,
   category,
-  location,
-  history,
+  navigation,
   onPress,
   pads
 }) => (
   <TouchableOpacity
-    onPress={() => {
-      // console.log(`location: `, location)
-      if (currentCategory) {
-        const newLocation = location.pathname.replace(
-          currentCategory,
-          category
-        )
-        history.replace(newLocation)
-      } else if (QuadClickFlow === 5) {
-        const state = location.state || {}
-        state[promptForResponseTypeKey] = true
-        history.push(`/category/${category}`, state)
-      } else {
-        history.push(`/category/${category}/response/text`)
-      }
-    }}
+    onPress={() => goTo(`/category/${category}`, {navigation})}
     activeOpacity={0.6}
   >
     <View
@@ -173,8 +151,7 @@ const Wheel = props => {
           quadComponent={ScriptureQuad}
           currentCategory={props.currentCategory}
           category={"scripture"}
-          location={props.location}
-          history={props.history}
+          navigation={props.navigation}
           pads={{
             paddingTop: imgPad * imgPadMod,
             paddingBottom: imgPad / imgPadMod,
@@ -190,8 +167,7 @@ const Wheel = props => {
           quadComponent={ObservationQuad}
           currentCategory={props.currentCategory}
           category={"observation"}
-          location={props.location}
-          history={props.history}
+          navigation={props.navigation}
           pads={{
             paddingTop: imgPad * imgPadMod,
             paddingBottom: imgPad / imgPadMod,
@@ -209,8 +185,7 @@ const Wheel = props => {
           quadComponent={PrayerQuad}
           currentCategory={props.currentCategory}
           category={"prayer"}
-          location={props.location}
-          history={props.history}
+          navigation={props.navigation}
           pads={{
             paddingTop: imgPad / imgPadMod,
             paddingBottom: imgPad * imgPadMod,
@@ -227,8 +202,7 @@ const Wheel = props => {
           quadComponent={ApplicationQuad}
           currentCategory={props.currentCategory}
           category={"application"}
-          location={props.location}
-          history={props.history}
+          navigation={props.navigation}
           pads={{
             paddingTop: imgPad / imgPadMod,
             paddingBottom: imgPad * imgPadMod,
@@ -238,7 +212,7 @@ const Wheel = props => {
         />
       </View>
       <TouchableOpacity
-        onPress={() => props.history.push("/feed")}
+        onPress={() => goTo(`/feed`, props)}
         activeOpacity={0.6}
         style={[
           styles.layer,

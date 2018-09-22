@@ -39,20 +39,12 @@ import {
 } from "react-native-paper"
 
 import styles from "../utils/styles"
-import { getCurrentCategory } from "../utils/prop-utils"
+import { getCurrentCategory, gotTo } from "../utils/prop-utils"
 
-import {
-  NativeRouter,
-  Route,
-  Link,
-  withRouter,
-  Switch
-} from "react-router-native"
 import BackgroundPattern from "./BackgroundPattern"
 
-const BackgroundWithoutRouter = ({ location }) => {
+const Background = ({category}) => {
   const { width, height } = Dimensions.get("window")
-  const category = getCurrentCategory(location)
   const svgW = 1200
   const svgH = 2500
   const w = Math.round(width * 1.2)
@@ -68,4 +60,4 @@ const BackgroundWithoutRouter = ({ location }) => {
     </View>
   )
 }
-export default withRouter(BackgroundWithoutRouter)
+export default Background

@@ -61,16 +61,10 @@ import Svg, {
 import { CategoriesArray, Categories } from "../utils/categories"
 import {
   getCurrentCategory,
-  getCurrentResponseType
+  getCurrentResponseType,
+  goTo
 } from "../utils/prop-utils"
 
-import {
-  NativeRouter,
-  Route,
-  Link,
-  withRouter,
-  Switch
-} from "react-router-native"
 
 const QuadClickFlow = 1
 const CategoryIcons = {
@@ -160,25 +154,19 @@ const FabIcon = ({ size, color }) => (
 
 const promptForResponseTypeKey = "promptForResponseType"
 
-class BottomFabWithoutRouter extends React.PureComponent {
+class BottomFab extends React.PureComponent {
   state = {
     open: false
   };
 
   fabActionPress = action => () => {
     // console.log("fabActionPress: " + action);
-    const { history, location, match } = this.props
-    const currentCategory = getCurrentCategory(location)
+    const currentCategory = getCurrentCategory(this.props)
     if (Categories[action]) {
-      const pathname = `/category/${action}`
-      if (currentCategory) {
-        history.replace(pathname)
-      } else {
-        history.push(pathname)
-      }
+      goTo(`/category/${action}`, this.props)
     }
     if (/audio|video|picture|text/.test(action)) {
-      history.push(`/category/${currentCategory}/response/${action}`)
+      goTo(`/category/${currentCategory}/response/${action}`, this.props)
     }
     // console.log(event);
   };
@@ -191,31 +179,15 @@ class BottomFabWithoutRouter extends React.PureComponent {
   };
 
   onStateChange = ({ open }) => {
-    // console.log(`onStateChange: ${open}`, this.props.location.state)
-    if (this.usesState()) {
-      this.setState({ open })
-    } else {
-      const location = this.props.location
-      const state = location.state || {}
-      state[promptForResponseTypeKey] = !!open
-      this.props.history.replace(
-        `${location.pathname}${location.search || ""}`,
-        Object.assign({}, state)
-      )
-    }
+    this.setState({ open })
   };
 
   usesState = () => QuadClickFlow === 5 && this.props.buster === "plus";
 
   render() {
-    const { history, location, match, buster } = this.props
-    // console.log('routerProps')
-    // console.log(routerProps)
-    // const state = location.state || {}
-    const isExpanded = this.usesState()
-      ? this.state.open
-      : !!(this.props.location.state || {})[promptForResponseTypeKey]
-    const currentCategory = getCurrentCategory(location)
+    const { buster } = this.props
+    const isExpanded = this.state.open
+    const currentCategory = getCurrentCategory(this.props)
     // console.log(`render fab: '${currentCategory}'`);
     if (buster === "plus" && !!currentCategory) {
       return null
@@ -276,4 +248,4 @@ class BottomFabWithoutRouter extends React.PureComponent {
     )
   }
 }
-export default withRouter(BottomFabWithoutRouter)
+export default BottomFab
