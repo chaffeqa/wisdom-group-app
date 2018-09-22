@@ -82,52 +82,54 @@ const QuadIcons = {
 
 const promptForResponseTypeKey = "promptForResponseType"
 
-const Quad = ({
-  w,
-  imgPad,
-  imgPadMod,
-  quadMargin,
-  currentCategory,
-  quadComponent: Comp,
-  category,
-  navigation,
-  onPress,
-  pads
-}) => (
-  <TouchableOpacity
-    onPress={() => goTo(`/category/${category}`, {navigation})}
-    activeOpacity={0.6}
-  >
-    <View
-      style={[
-        {
-          width: w / 2,
-          height: w / 2
-        },
-        pads
-      ]}
+const Quad = (props) => {
+  const {
+    w,
+    imgPad,
+    imgPadMod,
+    quadMargin,
+    currentCategory,
+    quadComponent: Comp,
+    category,
+    onPress,
+    pads
+  } = props
+  return (
+    <TouchableOpacity
+      onPress={() => goTo(`/category/${category}`, props)}
+      activeOpacity={0.6}
     >
-      <Comp style={[styles.layer, quadMargin]} />
-      <View style={{ flex: 1 }}>
-        <Image
-          style={[
-            styles.layer,
-            {
-              left: 0,
-              top: 0,
-              flex: 1,
-              alignSelf: "stretch",
-              width: undefined,
-              height: undefined
-            }
-          ]}
-          resizeMode="contain"
-          source={QuadIcons[category]}
-        />
+      <View
+        style={[
+          {
+            width: w / 2,
+            height: w / 2
+          },
+          pads
+        ]}
+      >
+        <Comp style={[styles.layer, quadMargin]} />
+        <View style={{ flex: 1 }}>
+          <Image
+            style={[
+              styles.layer,
+              {
+                left: 0,
+                top: 0,
+                flex: 1,
+                alignSelf: "stretch",
+                width: undefined,
+                height: undefined
+              }
+            ]}
+            resizeMode="contain"
+            source={QuadIcons[category]}
+          />
+        </View>
       </View>
-    </View>
-  </TouchableOpacity>
-)
+    </TouchableOpacity>
+  )
+}
 
 const Wheel = props => {
   const { width, height } = Dimensions.get("window")
