@@ -20,14 +20,27 @@
   },
   "dependencies": {
     "expo": "^30.0.0",
+    "moment": "^2.22.2",
+    "prop-types": "^15.6.2",
+    "ramda": "^0.25.0",
     "react": "16.5.2",
     "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
     "react-native-paper": "^2.0.1",
     "react-native-screens": "^1.0.0-alpha.12",
+    "react-native-segmented-control-tab": "^3.3.1",
     "react-native-svg": "^7.0.3",
+    "react-native-swipeout": "^2.3.6",
     "react-navigation": "^2.16.0",
+    "react-navigation-redux-helpers": "^2.0.6",
+    "react-redux": "^5.0.7",
     "react-router-native": "^4.3.0",
-    "svgs": "^3.2.1"
+    "recompose": "^0.30.0",
+    "redux": "^4.0.0",
+    "redux-actions": "^2.6.1",
+    "redux-thunk": "^2.3.0",
+    "reselect": "^3.0.1",
+    "svgs": "^3.2.1",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@svgr/cli": "^2.2.0",
@@ -43,7 +56,8 @@
     "husky": "^1.0.0-rc.15",
     "lint-staged": "^7.2.0",
     "patch-package": "^5.1.1",
-    "prettier": "1.14.3"
+    "prettier": "1.14.3",
+    "remote-redux-devtools": "^0.5.13"
   },
   "husky": {
     "hooks": {
