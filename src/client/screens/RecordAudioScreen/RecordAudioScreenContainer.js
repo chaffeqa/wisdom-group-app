@@ -1,5 +1,4 @@
 import { Audio } from 'expo';
-import { connect } from 'react-redux';
 import {
   withHandlers,
   hoistStatics,
@@ -9,17 +8,12 @@ import {
 } from 'recompose';
 import uuid from 'uuid';
 import moment from 'moment';
-import { audioOperations } from '../../modules/audio';
 import screens from '../../navigation/screens';
 import RecordAudioScreenView from './RecordAudioScreenView';
 
-const mapDispatchToProps = {
-  addAudio: audioOperations.addAudio,
-};
-
 const enhancer = compose(
-  connect(null, mapDispatchToProps),
   withHandlers({
+    addAudio: props => async (args) => console.log(args),
     setAudioMode: () => async ({ allowsRecordingIOS }) => {
       try {
         await Audio.setAudioModeAsync({

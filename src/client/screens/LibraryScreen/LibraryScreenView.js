@@ -13,69 +13,83 @@ const tabs = [
   'Video',
 ];
 
-const LibraryScreenView = ({
-  selectedTabIndex,
-  audioItems,
-  playingAudio,
-  playAudio,
-  stopPlayingAudio,
-  removeAudio,
-  isPlaying,
-  position,
-  duration,
-  isLoading,
-  onTogglePlaying,
-  onCompleteSliding,
-  onStartSliding,
-  showPlayer,
-  videoItems,
-  playVideo,
-  removeVideo,
-}) => (
-  <View style={[globalStyles.fillAll, globalStyles.withWhiteBackground]}>
-    <View style={s.container}>
-      {selectedTabIndex === 0 /* Audio */ && (
-        <View style={s.container}>
+const LibraryScreenView = (props) => {
+  console.log('libscreen')
+  const {
+    selectedTabIndex,
+    audioItems,
+    playingAudio,
+    playAudio,
+    stopPlayingAudio,
+    removeAudio,
+    isPlaying,
+    position,
+    duration,
+    isLoading,
+    onTogglePlaying,
+    onCompleteSliding,
+    onStartSliding,
+    showPlayer,
+    videoItems,
+    playVideo,
+    removeVideo,
+    navigation,
+  } = props
+  return (
+    <View style={[globalStyles.fillAll, globalStyles.withWhiteBackground]}>
+      <SegmentedControlTab
+        values={tabs}
+        selectedIndex={getParamOr(navigation, 'selectedTabIndex', 0)}
+        onTabPress={getParamOr(navigation, 'changeTab', () => {})}
+        tabsContainerStyle={s.tabsContainer}
+        tabTextStyle={s.tabText}
+        activeTabStyle={s.activeTab}
+        tabStyle={s.tabStyle}
+      />
+      <View style={s.container}>
+        {selectedTabIndex === 0 /* Audio */ && (
+          <View style={s.container}>
+            <MediaList
+              items={audioItems}
+              playAudio={playAudio}
+              stopPlayingAudio={stopPlayingAudio}
+              noItemsTitle="There are no items yet"
+              noItemsCaption="Your recorded audio will be appear here"
+              ListItem={AudioItem}
+              playingAudioId={playingAudio() && playingAudio().id}
+              removeAudio={removeAudio}
+              needSeparator
+            />
+            {showPlayer &&
+              <AudioPlayer
+                title={playingAudio() && playingAudio().title}
+                isPlaying={isPlaying}
+                position={position}
+                duration={duration}
+                isLoading={isLoading}
+                onTogglePlaying={onTogglePlaying}
+                onCompleteSliding={onCompleteSliding}
+                onStartSliding={onStartSliding}
+              />}
+          </View>
+        )}
+
+        {selectedTabIndex === 1 /* Video */ && (
           <MediaList
-            items={audioItems}
-            playAudio={playAudio}
-            stopPlayingAudio={stopPlayingAudio}
+            items={videoItems}
+            onPress={playVideo}
             noItemsTitle="There are no items yet"
-            noItemsCaption="Your recorded audio will be appear here"
-            ListItem={AudioItem}
-            playingAudioId={playingAudio() && playingAudio().id}
-            removeAudio={removeAudio}
-            needSeparator
+            noItemsCaption="Your recorded video will be appear here"
+            ListItem={VideoItem}
+            removeVideo={removeVideo}
+            rowDirection
           />
-          {showPlayer &&
-            <AudioPlayer
-              title={playingAudio() && playingAudio().title}
-              isPlaying={isPlaying}
-              position={position}
-              duration={duration}
-              isLoading={isLoading}
-              onTogglePlaying={onTogglePlaying}
-              onCompleteSliding={onCompleteSliding}
-              onStartSliding={onStartSliding}
-            />}
-        </View>
-      )}
+        )}
 
-      {selectedTabIndex === 1 /* Video */ && (
-        <MediaList
-          items={videoItems}
-          onPress={playVideo}
-          noItemsTitle="There are no items yet"
-          noItemsCaption="Your recorded video will be appear here"
-          ListItem={VideoItem}
-          removeVideo={removeVideo}
-          rowDirection
-        />
-      )}
-
+      </View>
     </View>
-  </View>
-);
+  )
+};
 
 LibraryScreenView.propTypes = {
   selectedTabIndex: T.number,

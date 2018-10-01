@@ -1,4 +1,3 @@
-import { connect } from 'react-redux';
 import { LayoutAnimation } from 'react-native';
 import { Audio } from 'expo';
 import {
@@ -6,25 +5,39 @@ import {
   hoistStatics,
   withHandlers,
   withState,
-  withPropsOnChange, withStateHandlers, lifecycle,
+  withPropsOnChange, withProps, withStateHandlers, lifecycle,
 } from 'recompose';
-import { audioSelectors, audioOperations } from '../../modules/audio';
-import { videoSelectors, videoOperations } from '../../modules/video';
 import LibraryScreenView from './LibraryScreenView';
 import { setParamsOnDidMount, withClassVariableHandlers } from '../../utils/enhancers';
 
-const mapStateToProps = state => ({
-  audioItems: audioSelectors.getAllAudioItems(state),
-  videoItems: videoSelectors.getAllVideoItems(state),
-});
+// const mapStateToProps = state => ({
+//   audioItems: audioSelectors.getAllAudioItems(state),
+//   videoItems: videoSelectors.getAllVideoItems(state),
+// });
+// 
+// const mapDispatchToProps = {
+//   removeAudio: audioOperations.removeAudio,
+//   removeVideo: videoOperations.removeVideo,
+// };
 
-const mapDispatchToProps = {
-  removeAudio: audioOperations.removeAudio,
-  removeVideo: videoOperations.removeVideo,
-};
+const tabIndexesToResponse = [
+  'library',
+  'text',
+  'audio',
+  'video',
+  'picture'
+]
 
 const enhancer = compose(
-  connect(mapStateToProps, mapDispatchToProps),
+  withProps(props => {
+    console.log('withProps');
+    console.log(props)
+    return {
+      audioItems: [],
+      videoItems: [],
+      navigation: props.navigation,
+    }
+  }),
   withClassVariableHandlers({
     playbackInstance: null,
     isSeeking: false,
@@ -68,6 +81,8 @@ const enhancer = compose(
     },
   }),
   withHandlers({
+    removeAudio: props => async (args) => console.log(args),
+    removeVideo: props => async (args) => console.log(args),
     loadPlaybackInstance: props => async (shouldPlay) => {
       props.setState({ isLoading: true });
 
@@ -152,22 +167,28 @@ const enhancer = compose(
   withState('selectedTabIndex', 'changeTab', 0),
   withPropsOnChange(
     ['selectedTabIndex'],
-    props => props.navigation.setParams({ selectedTabIndex: props.selectedTabIndex }),
+    props => {
+      const currentResponse = props.navigation.getParam('response', '')
+        // console.log('wtf?', props.selectedTabIndex, tabIndexesToResponse[props.selectedTabIndex], currentResponse)
+      if (currentResponse !== tabIndexesToResponse[props.selectedTabIndex]) {
+        return props.navigation.actions.setParams({ response: tabIndexesToResponse[props.selectedTabIndex] })
+      }
+    },
   ),
   setParamsOnDidMount(props => ({
     changeTab: props.changeTab,
   })),
-  lifecycle({
-    async componentDidMount() {
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: false,
-        interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
-        playsInSilentModeIOS: true,
-        shouldDuckAndroid: true,
-        interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
-      });
-    },
-  }),
+  // lifecycle({
+  //   async componentDidMount() {
+  //     await Audio.setAudioModeAsync({
+  //       allowsRecordingIOS: false,
+  //       interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+  //       playsInSilentModeIOS: true,
+  //       shouldDuckAndroid: true,
+  //       interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+  //     });
+  //   },
+  // }),
 );
 
 export default hoistStatics(enhancer)(LibraryScreenView);

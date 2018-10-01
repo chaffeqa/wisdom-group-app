@@ -2,7 +2,6 @@ import React from 'react';
 import T from 'prop-types';
 import { AppLoading, Permissions, Constants, KeepAwake } from 'expo';
 import { BackHandler, View, UIManager } from 'react-native';
-import { Provider as ReduxProvider } from 'react-redux';
 import {
   compose,
   withState,
@@ -10,12 +9,8 @@ import {
   lifecycle,
 } from 'recompose';
 import { NavigationActions } from 'react-navigation';
-import store from './store';
 import { globalStyles } from './styles';
-import Navigator from './navigation';
-import {
-  reduxifyNavigator,
-} from 'react-navigation-redux-helpers';
+// import Navigator from './navigation';
 import {
   Provider as PaperProvider,
   DefaultTheme,
@@ -23,6 +18,9 @@ import {
 
 // import App from "./src/client"
 // import AppRR from "./src/client/AppRR"
+import Navigator from "./AppRN"
+
+const navigationPersistenceKey = __DEV__ ? "NavigationStateDEV1" : null
 
 const theme = {
   ...DefaultTheme,
@@ -52,13 +50,11 @@ const App = ({
   }
 
   return (
-    <ReduxProvider store={store}>
-      <PaperProvider theme={theme}>
-        <View style={globalStyles.fillAll}>
-          <Navigator />
-        </View>
-      </PaperProvider>
-    </ReduxProvider>
+    <PaperProvider theme={theme}>
+      <View style={globalStyles.fillAll}>
+        <Navigator persistenceKey={navigationPersistenceKey} />
+      </View>
+    </PaperProvider>
   );
 };
 
@@ -75,25 +71,6 @@ const enhance = compose(
     asyncJob: () => async () => {
       await Permissions.askAsync(Permissions.AUDIO_RECORDING);
       await Permissions.askAsync(Permissions.CAMERA);
-    },
-    navigateBack: () => () => { // eslint-disable-line
-      const { navigation } = store.getState();
-
-      const currentStackScreen = navigation.index;
-      const currentTab = navigation.routes[0].index;
-
-      if (currentTab !== 0 || currentStackScreen !== 0) {
-        store.dispatch(NavigationActions.back({ key: null }));
-        return true;
-      }
-
-      // otherwise let OS handle the back button action
-      return false;
-    },
-  }),
-  lifecycle({
-    componentWillMount() {
-      BackHandler.addEventListener('hardwareBackPress', this.props.navigateBack);
     },
   }),
 );

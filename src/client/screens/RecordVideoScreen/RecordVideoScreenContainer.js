@@ -7,18 +7,11 @@ import {
 } from 'recompose';
 import moment from 'moment/moment';
 import uuid from 'uuid';
-import { connect } from 'react-redux';
-import { videoOperations } from '../../modules/video';
 import RecordVideoScreenView from './RecordVideoScreenView';
 import screens from '../../navigation/screens';
 
 
-const mapDispatchToProps = {
-  addVideo: videoOperations.addVideo,
-};
-
 const enhancer = compose(
-  connect(null, mapDispatchToProps),
   withStateHandlers({
     cameraType: Camera.Constants.Type.back,
     cameraRef: null,
@@ -42,6 +35,7 @@ const enhancer = compose(
     setState: () => obj => obj,
   }),
   withHandlers({
+    addVideo: props => async (args) => console.log(args),
     setVideoDuration: props => () => {
       const interval = setInterval(() => {
         props.setDuration(100);

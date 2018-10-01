@@ -6,36 +6,41 @@ import {
   ScrollView,
   Button,
 } from "react-native"
+// import MultiMediaTabNavigator from './navigation/MainAppTabNavigator';
 import { Constants, KeepAwake } from "expo"
 import {
   Provider as PaperProvider,
   DefaultTheme,
 } from "react-native-paper"
+import LibraryScreen from './screens/LibraryScreen';
+import PlayVideoScreen from './screens/PlayVideoScreen';
+import RecordVideoScreen from './screens/RecordVideoScreen';
+import RecordAudioScreen from './screens/RecordAudioScreen';
 
 import { createStackNavigator, createSwitchNavigator, createDrawerNavigator , withNavigation} from 'react-navigation';
 
-import Selector from "./src/client/components/Selector"
-import InnerCircle from "./src/client/components/InnerCircle"
-import Drawer from "./src/client/components/Drawer"
-import PrayerQuad from "./src/client/components/PrayerQuad"
-import ObservationQuad from "./src/client/components/ObservationQuad"
-import ScriptureQuad from "./src/client/components/ScriptureQuad"
-import ApplicationQuad from "./src/client/components/ApplicationQuad"
-import ScriptureNav from "./src/client/components/ScriptureNav"
-import Category from "./src/client/components/Category"
-import CategoryResponse from "./src/client/components/CategoryResponse"
-import Wheel from "./src/client/components/Wheel"
-import Background from "./src/client/components/Background"
-import BottomFab from "./src/client/components/BottomFab"
-import Titlebar from "./src/client/components/Titlebar"
-import Feed from "./src/client/components/Feed"
-import { CategoriesArray, Categories } from "./src/client/utils/categories"
-import styles from "./src/client/utils/styles"
+import Selector from "./components/Selector"
+import InnerCircle from "./components/InnerCircle"
+import Drawer from "./components/Drawer"
+import PrayerQuad from "./components/PrayerQuad"
+import ObservationQuad from "./components/ObservationQuad"
+import ScriptureQuad from "./components/ScriptureQuad"
+import ApplicationQuad from "./components/ApplicationQuad"
+import ScriptureNav from "./components/ScriptureNav"
+import Category from "./components/Category"
+import CategoryResponse from "./components/CategoryResponse"
+import Wheel from "./components/Wheel"
+import Background from "./components/Background"
+import BottomFab from "./components/BottomFab"
+import Titlebar from "./components/Titlebar"
+import Feed from "./components/Feed"
+import { CategoriesArray, Categories } from "./utils/categories"
+import styles from "./utils/styles"
 import {
   getCurrentCategory,
   getCurrentResponseType,
   goTo,
-} from "./src/client/utils/prop-utils"
+} from "./utils/prop-utils"
 import { useScreens } from 'react-native-screens';
 
 useScreens();
@@ -72,20 +77,11 @@ class LayoutWithoutRouter extends React.PureComponent {
 const Layout = withNavigation(LayoutWithoutRouter)
 
 class CategoryResponseScreen extends React.Component {
-  static navigationOptions = {
-    drawerLabel: 'Home',
-    title: "Category",
-  };
   render() {
+    console.log('CategoryResponseScreen')
+    console.log(this.props)
     return (
-      <View style={[styles.container, { flex: 1, alignItems: "center" }]}>
-        <Text>CategoryResponse Screen!</Text>
-        <Text>state: {JSON.stringify(this.props.navigation.state, null, 2)}</Text>
-          <Button
-          onPress={() => this.props.navigation.goBack()}
-          title="Go back"
-        />
-      </View>
+      <LibraryScreen {...this.props} />
     );
   }
 }
@@ -152,17 +148,12 @@ const CategoryStack = createStackNavigator({
     screen: CategoryScreen,
     path: '/category/:category'
   },
-  CategoryResponse: {
-    screen: CategoryResponseScreen,
-    path: '/category/:category/response/:response'
-  },
 },
 {
   initialRouteName: 'Category',
+  headerMode: 'none',
+  // headerMode: 'screen',
   mode: 'modal',
-  navigationOptions: {
-    header: null,
-  },
 })
 const WheelStack = createStackNavigator({
   Wheel: {
@@ -173,6 +164,7 @@ const WheelStack = createStackNavigator({
 },
 {
   initialRouteName: 'Wheel',
+  // headerMode: 'screen',
 })
 const FeedStack = createStackNavigator({
   Feed: {
@@ -182,16 +174,36 @@ const FeedStack = createStackNavigator({
 },
 {
   initialRouteName: 'Feed',
+  // headerMode: 'screen',
 })
 
-const RootStack = createDrawerNavigator({
+const AppStack = createDrawerNavigator({
   Wheel: WheelStack,
   Feed: FeedStack,
 },
 {
   initialRouteName: 'Wheel',
-  contentOptions: {
-  }
+  // headerMode: 'none',
+});
+const CategoryResponseStack = createStackNavigator({
+  CategoryResponse: {
+    screen: CategoryResponseScreen,
+    path: '/category/:category/response/:response'
+  },
+},
+{
+  initialRouteName: 'CategoryResponse',
+  headerMode: 'screen',
+})
+
+const RootStack = createStackNavigator({
+  Wheel: AppStack,
+  CategoryResponse: CategoryResponseStack,
+},
+{
+  initialRouteName: 'Wheel',
+  headerMode: 'none',
+  mode: 'modal',
 });
 
 
